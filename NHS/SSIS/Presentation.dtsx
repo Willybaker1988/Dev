@@ -1,0 +1,233 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="7/24/2017 4:19:52 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="ASGLH-WL-10427"
+  DTS:CreatorName="ASSEENONSCREEN\william.baker"
+  DTS:DTSID="{A1430C9F-F57C-4234-AEF9-7C69BDDD268C}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="2057"
+  DTS:ObjectName="Presentation"
+  DTS:PackageType="5"
+  DTS:VersionBuild="10"
+  DTS:VersionGUID="{06E298F7-B05F-42DD-A997-7EA2AF0DF48B}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[DW_Framework]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+      DTS:ObjectName="DW_Framework">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::DW_Framework]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=ASGLH-WL-10427\WILLLOCAL;Initial Catalog=DW_Framework;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[NHS]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+      DTS:ObjectName="NHS">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::NHS]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=ASGLH-WL-10427\WILLLOCAL;Initial Catalog=NHS;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Dimensions"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{a2d63218-4d12-473f-8df1-a8e642e31eb8}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Dimensions">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Dimensions\Datawarehouse DimGeneralPracticeAddress"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Transform DimGeneralPracticeAddress"
+          DTS:DTSID="{7ce5145b-52eb-4f80-9830-bcd4efbc622f}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Datawarehouse DimGeneralPracticeAddress"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+              SQLTask:SqlStatementSource="DECLARE @DateActiveFrom datetime = getdate();&#xA;DECLARE @DateActiveTo&#x9;datetime = CAST('9999-12-31 00:00:00.000' AS DATETIME);&#xA;DECLARE @IsActive BIT = 1;&#xA;&#xA;MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT&#xA;USING [NHS].[Mirror].[DimGeneralPracticeAddress] AS SRC &#xA;&#x9;ON TGT.[GPId] = SRC.[GPId] &#xA;&#x9;AND TGT.[PostCode] = SRC.[PostCode]&#xA;WHEN NOT MATCHED THEN --WHEN NOT MATCHED THEN INSERT NEW GP PRACTICES WITH NEW POSTCODES FOUND IN MIRROR (NEW GP RECORDS).&#xA;INSERT&#xA;(&#xA;     [GPId]&#xA;    ,[GeneralPracticePrimarySurgeryName]&#xA;    ,[GeneralPracticeSecondarySurgeryName]&#xA;    ,[AddressLine1]&#xA;    ,[AddressLine2]&#xA;    ,[AddressLine3]&#xA;    ,[PostCode]&#xA;&#x9;,[IsActive]&#xA;&#x9;,[DateActiveFrom]&#xA;&#x9;,[DateActiveTo]&#xA;)&#xA;VALUES&#xA;(&#xA;     SRC.[GPId]&#xA;    ,SRC.[GeneralPracticePrimarySurgeryName]&#xA;    ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;    ,SRC.[AddressLine1]&#xA;    ,SRC.[AddressLine2]&#xA;    ,SRC.[AddressLine3]&#xA;    ,SRC.[PostCode]&#xA;&#x9;,@IsActive&#xA;&#x9;,@DateActiveFrom&#xA;&#x9;,@DateActiveto&#xA;)&#xA;WHEN MATCHED -- FAKE CONDITION (WILL NEVER BE TRUE).&#xA;&#x9;&#x9;&#x9;AND (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;TGT.[PostCode] &lt;&gt; SRC.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;THEN UPDATE SET&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; tgt.[IsActive]&#x9;&#x9;&#x9;=&#x9;0&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,tgt.[DateActiveTo]&#x9;&#x9;=&#x9;@DateActiveFrom&#xA;&#x9;&#x9;&#x9;&#x9;--)&#xA;OUTPUT&#xA;&#x9; SRC.[GPId]&#xA;&#x9;,SRC.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;,SRC.[AddressLine1]&#xA;&#x9;,SRC.[AddressLine2]&#xA;&#x9;,SRC.[AddressLine3]&#xA;&#x9;,SRC.[PostCode]&#xA;&#x9;,SRC.[FileLogId]&#xA;&#x9;,SRC.[DateCreated]&#xA;&#x9;,SRC.[DateModified]&#xA;&#x9;,$Action AS [MergeAction];&#xA;&#xA;&#xA;MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT&#xA;USING [NHS].[Mirror].[DimGeneralPracticeAddress] AS SRC &#xA;&#x9;ON TGT.[GPId] = SRC.[GPId] &#xA;WHEN NOT MATCHED THEN --WHEN NOT MATCHED THEN INSERT NEW GPS FOUND IN MIRROR (NEW GP RECORDS).&#xA;INSERT&#xA;(&#xA;     [GPId]&#xA;    ,[GeneralPracticePrimarySurgeryName]&#xA;    ,[GeneralPracticeSecondarySurgeryName]&#xA;    ,[AddressLine1]&#xA;    ,[AddressLine2]&#xA;    ,[AddressLine3]&#xA;    ,[PostCode]&#xA;&#x9;,[IsActive]&#xA;&#x9;,[DateActiveFrom]&#xA;&#x9;,[DateActiveTo]&#xA;)&#xA;VALUES&#xA;(&#xA;     SRC.[GPId]&#xA;    ,SRC.[GeneralPracticePrimarySurgeryName]&#xA;    ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;    ,SRC.[AddressLine1]&#xA;    ,SRC.[AddressLine2]&#xA;    ,SRC.[AddressLine3]&#xA;    ,SRC.[PostCode]&#xA;&#x9;,@IsActive&#xA;&#x9;,@DateActiveFrom&#xA;&#x9;,@DateActiveto&#xA;)&#xA;WHEN MATCHED -- FOR TYPE 2 RECORDS, UPDATE SCD RECORDS FOR EXISTING RECORDS IN THE DATAWAREHOUSE TABLE WHERE THE ADDRESS HS CHANGED BY UPDATING [IsActive] AND DateActiveTo.&#xA;&#x9;&#x9;&#x9;AND (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;TGT.[PostCode] &lt;&gt; SRC.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;THEN UPDATE SET&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; tgt.[IsActive]&#x9;&#x9;&#x9;=&#x9;0&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,tgt.[DateActiveTo]&#x9;&#x9;=&#x9;@DateActiveFrom&#xA;&#x9;&#x9;&#x9;&#x9;--)&#xA;OUTPUT&#xA;&#x9; SRC.[GPId]&#xA;&#x9;,SRC.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;,SRC.[AddressLine1]&#xA;&#x9;,SRC.[AddressLine2]&#xA;&#x9;,SRC.[AddressLine3]&#xA;&#x9;,SRC.[PostCode]&#xA;&#x9;,SRC.[FileLogId]&#xA;&#x9;,SRC.[DateCreated]&#xA;&#x9;,SRC.[DateModified]&#xA;&#x9;,$Action AS [MergeAction];&#xA;&#x9;&#xA;&#xA;&#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\ETL End - Complete"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{ea8f4df2-e98f-4b68-a4ec-347eda291de4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ETL End - Complete"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+          SQLTask:SqlStatementSource="EXEC [dbo].[uspExecutionEnd]&#xA;@PackageName = ?,&#xA;@UserName = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="System::PackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="System::UserName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\ETL Start - Start Logging"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{10e2024a-291c-438b-b0ce-789daa86703f}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ETL Start - Start Logging"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+          SQLTask:SqlStatementSource="EXEC [dbo].[uspExecutionStart]&#xA;@PackageName = ?,&#xA;@UserName = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="System::PackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="System::UserName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{DA79DCBA-9C48-4B8C-94B7-6CA4B4A6FEE5}"
+      DTS:From="Package\ETL Start - Start Logging"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Dimensions" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{B4808C10-77C5-4713-A34E-4BFC2FD52885}"
+      DTS:From="Package\Dimensions"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\ETL End - Complete" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="286,42"
+          Id="Package\Dimensions\Datawarehouse DimGeneralPracticeAddress"
+          TopLeft="22.2499990624687,33.9333300324281" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="326.666666666667,134.666666666667"
+          Size="326.666666666667,177.333333333334"
+          Id="Package\Dimensions"
+          TopLeft="62.4999999627471,109.399999116659" />
+        <NodeLayout
+          Size="174,42"
+          Id="Package\ETL End - Complete"
+          TopLeft="145.833332054317,344.133332496484" />
+        <NodeLayout
+          Size="198,42"
+          Id="Package\ETL Start - Start Logging"
+          TopLeft="124.999998137355,25.3499995467067" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="224.916665716718,67.3499995467067">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42.0499995699525"
+              Start="0,0"
+              End="0,34.5499995699525">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.5499995699525" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="229.333332675199,286.733332449993">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,57.4000000464916"
+              Start="0,0"
+              End="0,49.9000000464916">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,49.9000000464916" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

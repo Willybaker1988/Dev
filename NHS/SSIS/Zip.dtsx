@@ -1,0 +1,697 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/4/2017 3:38:00 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="ASGLH-WL-10427"
+  DTS:CreatorName="ASSEENONSCREEN\william.baker"
+  DTS:DTSID="{73D91BFF-8B89-40C6-B142-24983727549F}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="2057"
+  DTS:ObjectName="Zip"
+  DTS:PackageType="5"
+  DTS:VersionBuild="45"
+  DTS:VersionGUID="{04B4A546-0FC0-4AEC-878C-52CC3BAF7917}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[DW_Framework]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+      DTS:ObjectName="DW_Framework">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::DW_Framework]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=ASGLH-WL-10427\WILLLOCAL;Initial Catalog=DW_Framework;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2890C49B-DB2E-4A53-AB62-60C515BC3102}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;a -t7z \&quot;&quot;+ @[User::FilesToZipWorkingDirectory] + &quot;\\&quot; + REPLACE( @[User::FilesToZip], &quot;.CSV&quot;, &quot;&quot; ) + &quot;.ZIP\&quot;&quot; +&quot; \&quot;&quot;+ @[User::FilesToZipWorkingDirectory]+ &quot;\\&quot; + @[User::FilesToZip] +&quot;\&quot;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DEV">
+      <DTS:VariableValue
+        DTS:DataType="8">a -t7z "C:\Users\william.baker\Documents\NHS\Archived\T201611ADDR+BNFT.ZIP" "C:\Users\william.baker\Documents\NHS\Archived\T201611ADDR+BNFT.CSV"</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8DEF9987-972E-4352-999F-F5014652D245}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="FileLogId">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{68ECCA88-66FE-434B-8412-4589CAE2E292}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::FilesToZipWorkingDirectory] + &quot;\\&quot; + @[User::FilesToZip]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="FilesToBeDeleted">
+      <DTS:VariableValue
+        DTS:DataType="8">C:\Users\william.baker\Documents\NHS\Archived\T201611ADDR+BNFT.CSV</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{12844E51-DE20-42B4-BCFC-DF0B90D88ADC}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="FilesToBeZipped">
+      <DTS:VariableValue
+        DTS:DataSubType="ManagedSerializable"
+        DTS:DataType="13">
+        <SOAP-ENV:Envelope xmlns:clr="http://schemas.microsoft.com/soap/encoding/clr/1.0" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+          <SOAP-ENV:Body>
+            <xsd:anyType
+              id="ref-1"></xsd:anyType>
+          </SOAP-ENV:Body>
+        </SOAP-ENV:Envelope>
+      </DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8B5F6F47-481A-4611-8E4B-F57D79FB6BFC}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="FilesToZip">
+      <DTS:VariableValue
+        DTS:DataType="8">T201611ADDR+BNFT.CSV</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C9B527F2-7925-459D-BAF6-9744F09DC3AE}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::Archived]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="FilesToZipWorkingDirectory">
+      <DTS:VariableValue
+        DTS:DataType="8">C:\Users\william.baker\Documents\NHS\Archived</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A3EA3526-5F70-4DE4-A063-5E74648BDFA3}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LogType">
+      <DTS:VariableValue
+        DTS:DataType="8">Zip</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F69BFE5D-3546-4573-8B09-24E23FBE9072}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="Variable">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{73887E11-D3CA-4CAD-82A9-252D8CB78176}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::ZipExec]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ZipExec">
+      <DTS:VariableValue
+        DTS:DataType="8">C:\Program Files\7-Zip\7zG.exe</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\ETL End - Complete"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{41ce97a7-927a-4d6d-9342-144473a16e96}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ETL End - Complete"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+          SQLTask:SqlStatementSource="EXEC [dbo].[uspExecutionEnd]&#xA;@PackageName = ?,&#xA;@UserName = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="System::PackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="System::UserName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\ETL Start - Start Logging"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{ff6bc957-d555-4fa6-a56d-d78bf6746f96}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ETL Start - Start Logging"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+          SQLTask:SqlStatementSource="EXEC [dbo].[uspExecutionStart]&#xA;@PackageName = ?,&#xA;@UserName = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="System::PackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="System::UserName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Identify Archived Files to be Zipped"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{8f5e1a8b-7fda-4daf-a345-45146f406843}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Identify Archived Files to be Zipped"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+          SQLTask:SqlStatementSource="SELECT DISTINCT&#xA;&#x9;[FilesToBeZipped] =  [FileName]&#xA;FROM [NHS].[FileLoadLog]&#xA;WHERE IsZipped = 0 AND DestinationPath IS NOT NULL"
+          SQLTask:ResultType="ResultSetType_Rowset" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="0"
+            SQLTask:DtsVariableName="User::FilesToBeZipped" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Zip Archived Files then Delete"
+      DTS:CreationName="STOCK:FOREACHLOOP"
+      DTS:Description="Foreach Loop Container"
+      DTS:DTSID="{F3948802-A958-41C9-9ADC-1B69FF112B35}"
+      DTS:ExecutableType="STOCK:FOREACHLOOP"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Zip Archived Files then Delete">
+      <DTS:ForEachEnumerator
+        DTS:CreationName="Microsoft.ForEachADOEnumerator"
+        DTS:DTSID="{3C38295B-CA9B-4E0B-BFA8-0C6E98F916AF}"
+        DTS:ObjectName="{3C38295B-CA9B-4E0B-BFA8-0C6E98F916AF}">
+        <DTS:ObjectData>
+          <FEEADO
+            EnumType="EnumerateRowsInFirstTable"
+            VarName="User::FilesToBeZipped" />
+        </DTS:ObjectData>
+      </DTS:ForEachEnumerator>
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Zip Archived Files then Delete\Delete Archived File"
+          DTS:CreationName="Microsoft.FileSystemTask"
+          DTS:Description="File System Task"
+          DTS:DTSID="{D5241B1B-952B-4211-8CA3-84CA2A3546B5}"
+          DTS:ExecutableType="Microsoft.FileSystemTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Delete Archived File"
+          DTS:TaskContact="File System Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <FileSystemData
+              TaskOperationType="DeleteFile"
+              TaskSourcePath="User::FilesToBeDeleted"
+              TaskIsSourceVariable="True" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Zip Archived Files then Delete\End Log File Activity to Execution Log"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{991e65c3-e65a-42c1-aaa6-0bb320628022}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="End Log File Activity to Execution Log"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+              SQLTask:SqlStatementSource="DECLARE @FileName NVARCHAR(30) = ?&#xA;DECLARE @FileID INT = (SELECT DISTINCT [FileLogId] FROM [NHS].[FileLoadLog] WHERE FileName = @FileName )&#xA;DECLARE @ActivityLogDateTimeCreated datetime = CONVERT(DATETIME,SYSUTCDATETIME())&#xA;DECLARE @Comment NVARCHAR(255) = 'Finishing Zipping archived file ' +CAST(@FileName AS NVARCHAR(30))+'  with FileLogId '+CAST(@FileID AS NVARCHAR(10))+'' &#xA;DECLARE @FileType NVARCHAR(1) = (SELECT DISTINCT [FileType] From [NHS].[FileLoadLog] where FileLogId = @FileID)&#xA;&#xA;&#xA;EXEC [dbo].[UspExecutionLogActivity] &#xA;   @PackageName  = ?&#xA;  ,@UserName = ?&#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type = @FileType&#xA;  ,@Status  = ?&#xA;  ,@Comment = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::FilesToZip"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="2"
+                SQLTask:DtsVariableName="System::UserName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="3"
+                SQLTask:DtsVariableName="User::LogType"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Zip Archived Files then Delete\Start  - Log File Activity to Execution Log"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{dedcf24d-4091-4833-9629-5a12b9a7018c}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Start  - Log File Activity to Execution Log"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+              SQLTask:SqlStatementSource="DECLARE @FileName NVARCHAR(30) = ?&#xA;DECLARE @FileID INT = (SELECT DISTINCT [FileLogId] FROM [NHS].[FileLoadLog] WHERE FileName = @FileName )&#xA;DECLARE @ActivityLogDateTimeCreated datetime = CONVERT(DATETIME,SYSUTCDATETIME())&#xA;DECLARE @Comment NVARCHAR(255) = 'Starting Zipping archived file ' +CAST(@FileName AS NVARCHAR(30))+'  with FileLogId '+CAST(@FileID AS NVARCHAR(10))+'' &#xA;DECLARE @FileType NVARCHAR(1) = (SELECT DISTINCT [FileType] From [NHS].[FileLoadLog] where FileLogId = @FileID)&#xA;&#xA;&#xA;EXEC [dbo].[UspExecutionLogActivity] &#xA;   @PackageName  = ?&#xA;  ,@UserName = ?&#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type = @FileType&#xA;  ,@Status  = ?&#xA;  ,@Comment = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::FilesToZip"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="2"
+                SQLTask:DtsVariableName="System::UserName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="3"
+                SQLTask:DtsVariableName="User::LogType"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Zip Archived Files then Delete\Update FileLoadLog table with successful FileLogIds"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{58bff07a-4e56-480a-8d33-0a1570199779}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Update FileLoadLog table with successful FileLogIds"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+              SQLTask:SqlStatementSource="DECLARE @FileName NVARCHAR(30) = ?&#xA;DECLARE @FileLogId INT = (SELECT DISTINCT [FileLogId] FROM [NHS].[FileLoadLog] WHERE FileName = @FileName )&#xA;&#xA;EXEC [dbo].[UspUpdateFileLoadLogDev]&#xA;&#xA;@SourceFileDirectory = NULL,&#xA;@DestinationFileDirectory = NULL,&#xA;@PackageName  = ?,&#xA;@LogType = ?,&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;@FileLogId = @FileLogId&#x9;&#x9;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="System::PackageName"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="2"
+                SQLTask:DtsVariableName="User::LogType"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::FilesToZip"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Zip Archived Files then Delete\ZipFile"
+          DTS:CreationName="Microsoft.ExecuteProcess"
+          DTS:Description="Execute Process Task"
+          DTS:DTSID="{4c4789e1-8051-403e-9f34-c0e1b0e53bb4}"
+          DTS:ExecutableType="Microsoft.ExecuteProcess"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="ZipFile"
+          DTS:TaskContact="Execute Process Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="Arguments">"a -t7z \""+ @[User::FilesToZipWorkingDirectory] + "\\" + REPLACE( @[User::FilesToZip], ".CSV", "" ) + ".ZIP\"" +" \""+ @[User::FilesToZipWorkingDirectory]+ "\\" + @[User::FilesToZip] +"\""</DTS:PropertyExpression>
+          <DTS:PropertyExpression
+            DTS:Name="Executable">@[User::ZipExec]</DTS:PropertyExpression>
+          <DTS:PropertyExpression
+            DTS:Name="WorkingDirectory">@[User::FilesToZipWorkingDirectory]</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <ExecuteProcessData
+              Executable="C:\Program Files\7-Zip\7zG.exe"
+              Arguments="a -t7z &quot;C:\Users\william.baker\Documents\NHS\Archived\T201611ADDR+BNFT.ZIP&quot; &quot;C:\Users\william.baker\Documents\NHS\Archived\T201611ADDR+BNFT.CSV&quot;"
+              WorkingDirectory="C:\Users\william.baker\Documents\NHS\Archived"
+              WindowStyle="Hidden" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Zip Archived Files then Delete.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{2952642B-F366-4853-A18D-C39461B6F452}"
+          DTS:From="Package\Zip Archived Files then Delete\Start  - Log File Activity to Execution Log"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Zip Archived Files then Delete\ZipFile" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Zip Archived Files then Delete.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{0ECA20E9-2666-41FD-91D0-0819A8574F24}"
+          DTS:From="Package\Zip Archived Files then Delete\ZipFile"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Zip Archived Files then Delete\End Log File Activity to Execution Log" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Zip Archived Files then Delete.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{5627DA79-C185-49CF-A9EA-3BC3CE2CBA2D}"
+          DTS:From="Package\Zip Archived Files then Delete\End Log File Activity to Execution Log"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Zip Archived Files then Delete\Delete Archived File" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Zip Archived Files then Delete.PrecedenceConstraints[Constraint 3]"
+          DTS:CreationName=""
+          DTS:DTSID="{4193AAB4-7B95-4EBA-AF33-0D365AE92FFF}"
+          DTS:From="Package\Zip Archived Files then Delete\Delete Archived File"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 3"
+          DTS:To="Package\Zip Archived Files then Delete\Update FileLoadLog table with successful FileLogIds" />
+      </DTS:PrecedenceConstraints>
+      <DTS:ForEachVariableMappings>
+        <DTS:ForEachVariableMapping
+          DTS:CreationName=""
+          DTS:DTSID="{AFA07CEA-8F3D-4750-A96D-CCBB669355A2}"
+          DTS:ObjectName="{AFA07CEA-8F3D-4750-A96D-CCBB669355A2}"
+          DTS:ValueIndex="0"
+          DTS:VariableName="User::FilesToZip" />
+      </DTS:ForEachVariableMappings>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{37013B1E-3571-4380-ADEB-84480A21F9B3}"
+      DTS:From="Package\Identify Archived Files to be Zipped"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Zip Archived Files then Delete" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{F114103F-2CF8-41D7-A9AC-20EAD10B4F27}"
+      DTS:From="Package\ETL Start - Start Logging"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Identify Archived Files to be Zipped" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{E93E2A84-EC81-43FC-A946-379FC30D7639}"
+      DTS:From="Package\Zip Archived Files then Delete"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\ETL End - Complete" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="198,42"
+          Id="Package\ETL Start - Start Logging"
+          TopLeft="187.499997206032,232.36666733563" />
+        <NodeLayout
+          Size="136,42"
+          Id="Package\Zip Archived Files then Delete\ZipFile"
+          TopLeft="95.5555550257365,102.555554754867" />
+        <NodeLayout
+          Size="272.666666666667,42"
+          Id="Package\Zip Archived Files then Delete\Start  - Log File Activity to Execution Log"
+          TopLeft="22.166666418314,25.9333357663949" />
+        <EdgeLayout
+          Id="Package\Zip Archived Files then Delete.PrecedenceConstraints[Constraint]"
+          TopLeft="161.027777388692,67.9333357663949">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,34.6222189884717"
+              Start="0,0"
+              End="0,27.1222189884717">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27.1222189884717" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="258,42"
+          Id="Package\Zip Archived Files then Delete\End Log File Activity to Execution Log"
+          TopLeft="38.6944439498087,184.099999604821" />
+        <EdgeLayout
+          Id="Package\Zip Archived Files then Delete.PrecedenceConstraints[Constraint 1]"
+          TopLeft="165.624999487773,144.555554754867">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.5444448499546"
+              Start="0,0"
+              End="0,32.0444448499546">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.0444448499546" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="174,42"
+          Id="Package\Zip Archived Files then Delete\Delete Archived File"
+          TopLeft="87.1666630034645,269.166652757923" />
+        <EdgeLayout
+          Id="Package\Zip Archived Files then Delete.PrecedenceConstraints[Constraint 2]"
+          TopLeft="170.930553476637,226.099999604821">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,43.0666531531018"
+              Start="0,0"
+              End="0,35.5666531531018">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.5666531531018" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="324.666666666667,42"
+          Id="Package\Zip Archived Files then Delete\Update FileLoadLog table with successful FileLogIds"
+          TopLeft="19.2777763083577,355.333327289423" />
+        <EdgeLayout
+          Id="Package\Zip Archived Files then Delete.PrecedenceConstraints[Constraint 3]"
+          TopLeft="177.888886322578,311.166652757923">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.1666745314996"
+              Start="0,0"
+              End="0,36.6666745314996">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,36.6666745314996" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="446,456.666666666667"
+          Size="446,499.333333333334"
+          Id="Package\Zip Archived Files then Delete"
+          TopLeft="79.1666654869914,423.511107412444" />
+        <NodeLayout
+          Size="247.333333333334,42"
+          Id="Package\Identify Archived Files to be Zipped"
+          TopLeft="167.361108617236,314.711110832161" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="291.027775283903,356.711110832161">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="11.1388902030885,66.7999965802829"
+              Start="0,0"
+              End="11.1388902030885,59.2999965802829">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.3999982901415" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,29.3999982901415"
+                    Point2="0,33.3999982901415"
+                    Point3="4,33.3999982901415" />
+                  <mssgle:LineSegment
+                    End="7.13889020308852,33.3999982901415" />
+                  <mssgle:CubicBezierSegment
+                    Point1="7.13889020308852,33.3999982901415"
+                    Point2="11.1388902030885,33.3999982901415"
+                    Point3="11.1388902030885,37.3999982901415" />
+                  <mssgle:LineSegment
+                    End="11.1388902030885,59.2999965802829" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="288.763886244968,274.36666733563">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40.344443496532"
+              Start="0,0"
+              End="0,32.844443496532">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.844443496532" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="174,50"
+          Id="Package\ETL End - Complete"
+          TopLeft="212.499996833503,951.488881868654" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="300.833331160247,922.844440745778">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,28.6444411228766"
+              Start="0,0"
+              End="0,21.1444411228766">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.1444411228766" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="7Zip Zipped Files can only be Unzipped/Extracted by the 7Zip program"
+          ParentId="Package"
+          FontInfo="{assembly:Null}"
+          Size="201.333333333334,74"
+          Id="1825ffe0-26cd-4470-b53d-dcd88f24f4db"
+          TopLeft="555.555547277133,527.555550493134" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

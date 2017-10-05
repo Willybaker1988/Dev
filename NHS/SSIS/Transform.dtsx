@@ -1,0 +1,337 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="7/24/2017 4:08:41 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="ASGLH-WL-10427"
+  DTS:CreatorName="ASSEENONSCREEN\william.baker"
+  DTS:DTSID="{05576497-0E8B-42AD-8FC8-413D7F860F4E}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="2057"
+  DTS:ObjectName="Transform"
+  DTS:PackageType="5"
+  DTS:VersionBuild="14"
+  DTS:VersionGUID="{5E2490D5-2268-406C-91C9-7DA9F9FA0D48}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[DW_Framework]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+      DTS:ObjectName="DW_Framework">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::DW_Framework]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=ASGLH-WL-10427\WILLLOCAL;Initial Catalog=DW_Framework;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[NHS]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+      DTS:ObjectName="NHS">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::NHS]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=ASGLH-WL-10427\WILLLOCAL;Initial Catalog=NHS;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Dimensions"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{52130782-91DD-4FC6-ACA9-AAC3F4963B17}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Dimensions">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Dimensions\Mirror DimGeneralPracticeAddress"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{04CB4992-7276-4017-BE53-74D7D2A3BF27}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Mirror DimGeneralPracticeAddress"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+              SQLTask:SqlStatementSource="DECLARE @DateCreated datetime = GETDATE()&#xA;DECLARE @DateModified datetime = @DateCreated&#xA;&#xA;MERGE INTO [NHS].[Mirror].[DimGeneralPracticeAddress] AS TGT&#xA;USING &#xA;(&#xA;&#x9;--Loads the latest and unique list of GeneralPracticeAddress using the latestFileLogId&#xA;&#x9;SELECT&#xA;&#x9;&#x9; GPId&#xA;&#x9;&#x9;,GeneralPracticePrimarySurgeryName&#xA;&#x9;&#x9;,GeneralPracticeSecondarySurgeryName&#xA;&#x9;&#x9;,AddressLine1&#xA;&#x9;&#x9;,AddressLine2&#xA;&#x9;&#x9;,AddressLine3&#xA;&#x9;&#x9;,PostCode&#xA;&#x9;&#x9;,FileLogId&#xA;&#x9;&#x9;,DateCreated&#xA;&#x9;&#x9;,DateModified&#xA;&#x9;FROM &#xA;&#x9;(&#xA;&#x9;&#x9;SELECT DISTINCT&#xA;&#x9;&#x9;&#x9; GPId&#xA;&#x9;&#x9;&#x9;,GeneralPracticePrimarySurgeryName&#xA;&#x9;&#x9;&#x9;,GeneralPracticeSecondarySurgeryName&#xA;&#x9;&#x9;&#x9;,AddressLine1&#xA;&#x9;&#x9;&#x9;,AddressLine2&#xA;&#x9;&#x9;&#x9;,AddressLine3&#xA;&#x9;&#x9;&#x9;,PostCode&#xA;&#x9;&#x9;&#x9;,FileLogId&#xA;&#x9;&#x9;&#x9;,[ROW]&#x9;&#x9;&#x9;=&#x9;ROW_NUMBER() OVER (PARTITION BY GPID ORDER BY FILELOGID DESC)&#xA;&#x9;&#x9;&#x9;,[DateCreated]&#x9;=&#x9;@DateCreated&#xA;&#x9;&#x9;&#x9;,[DateModified]&#x9;=&#x9;@DateModified&#xA;&#x9;&#x9;FROM  [NHS].[Transform].[DimGeneralPracticeAddress] &#xA;&#x9;)&#xA;&#x9;D&#xA;&#x9;WHERE D.ROW = 1&#xA;) AS SRC &#xA;ON TGT.[GPId] = SRC.[GPId]&#xA;--WHEN NOT MATCHED THEN NEW GPS FOUND IN TRANSFORM, THEREFORE INSERT NEW RECORDS INTO THE MIRROR TABLE.&#xA;WHEN NOT MATCHED THEN &#xA;INSERT&#xA;(&#xA;     [GPId]&#xA;    ,[GeneralPracticePrimarySurgeryName]&#xA;    ,[GeneralPracticeSecondarySurgeryName]&#xA;    ,[AddressLine1]&#xA;    ,[AddressLine2]&#xA;    ,[AddressLine3]&#xA;    ,[PostCode]&#xA;&#x9;,[FileLogId]&#xA;&#x9;,[DateCreated]&#xA;&#x9;,[DateModified]&#xA;)&#xA;VALUES&#xA;(&#xA;     SRC.[GPId]&#xA;    ,SRC.[GeneralPracticePrimarySurgeryName]&#xA;    ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;    ,SRC.[AddressLine1]&#xA;    ,SRC.[AddressLine2]&#xA;    ,SRC.[AddressLine3]&#xA;    ,SRC.[PostCode]&#xA;&#x9;,SRC.[FileLogId]&#xA;&#x9;,SRC.[DateCreated]&#xA;&#x9;,SRC.[DateModified]&#xA;)&#xA;--WHEN A RECORD HAS BEEN MODIFIED IN TRANSFORM THEN UPDATE RECORD IN THE MIRROR TABLE.&#xA;WHEN MATCHED&#xA;&#x9;&#x9;&#x9;AND (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;tgt.[GeneralPracticePrimarySurgeryName] &lt;&gt; src.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[GeneralPracticeSecondarySurgeryName] &lt;&gt; src.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[AddressLine1] &lt;&gt; src.[AddressLine1]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[AddressLine2] &lt;&gt; src.[AddressLine2]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[AddressLine3] &lt;&gt; src.[AddressLine3]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[PostCode] &lt;&gt; src.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--Removed Reference to [FileLogId], Not needed as records which persit in earlier files will always trigger an update.&#xA;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;THEN UPDATE SET&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;tgt.[GeneralPracticePrimarySurgeryName] = src.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[GeneralPracticeSecondarySurgeryName] = src.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[AddressLine1] = src.[AddressLine1]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[AddressLine2] = src.[AddressLine2]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[AddressLine3] = src.[AddressLine3]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[PostCode] = src.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,  &#x9;tgt.[FileLogId] = src.[FileLogId] --Only Update the Mirror table records if an existing record has changed location details. FileLogId will identify these records&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[DateModified] = src.[DateModified] --Update the record in the mirror&#xA;OUTPUT&#xA;&#x9; SRC.[GPId]&#xA;&#x9;,SRC.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;,SRC.[AddressLine1]&#xA;&#x9;,SRC.[AddressLine2]&#xA;&#x9;,SRC.[AddressLine3]&#xA;&#x9;,SRC.[PostCode]&#xA;&#x9;,SRC.[FileLogId]&#xA;&#x9;,SRC.[DateCreated]&#xA;&#x9;,SRC.[DateModified]&#xA;&#x9;,$Action AS [MergeAction];&#xA;&#x9;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Dimensions\Transform DimGeneralPracticeAddress"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Transform DimGeneralPracticeAddress"
+          DTS:DTSID="{F9EB6600-A0AE-4C96-BC5D-D185789D6397}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Transform DimGeneralPracticeAddress"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+              SQLTask:SqlStatementSource="/*&#xA;&#x9;Convert BLANKS in attributes to NULLs for Transformation from Staging to Datwarehouse&#xA;*/&#xA;&#xA;DECLARE @Updatecounter INT&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET Address1 = NULL&#xA;WHERE Address1 = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS Address1&#xA;&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET Address2 = NULL&#xA;WHERE Address2 = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS Address2&#xA;&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET Address3 = NULL&#xA;WHERE Address3 = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS Address3&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET name = NULL&#xA;WHERE name = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS name&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET gpsurgeryname = NULL&#xA;WHERE gpsurgeryname = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS gpsurgeryname&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET postcode = NULL&#xA;WHERE postcode = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS postcode&#xA;&#xA;&#xA;insert into [Transform].[DimGeneralPracticeAddress]&#xA;(&#xA;&#x9;&#x9; [GPId]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;,[GeneralPracticePrimarySurgeryName]&#x9;&#xA;&#x9;&#x9;,[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;,[AddressLine1]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;,[AddressLine2]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;,[AddressLine3]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;,[PostCode]&#x9;&#x9;&#xA;&#x9;&#x9;,FileLogId&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;)&#xA;SELECT &#xA;&#x9;   COALESCE(GP.[GPId]&#x9;&#x9;&#x9;,   T.[GPId]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[GPSurgeryName]  , T.[GeneralPracticePrimarySurgeryName]&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[Name]&#x9;&#x9;&#x9;,   T.[GeneralPracticeSecondarySurgeryName]&#x9;     )&#xA;      ,COALESCE(GP.[Address1]&#x9;&#x9;,   T.[AddressLine1]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[Address2]&#x9;&#x9;,   T.[AddressLine2]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[Address3]&#x9;&#x9;,   T.[AddressLine3]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[PostCode]&#x9;&#x9;,   T.[PostCode]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,[FileLogId]&#xA;&#xA;  FROM&#xA;&#x9; [NHS].[Stage].[GPAddress] GP&#xA;  cross join&#xA;&#x9; [Transform].[udfTemplateDimGeneralPracticeAddress]() T&#xA;  --Will only pull through new staged records into the Tranform table&#xA;  WHERE &#xA;&#x9; [FileLogId] NOT IN (SELECT DISTINCT [FileLogId] FROM  [NHS].[Transform].[DimGeneralPracticeAddress])" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Dimensions.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{256FA1B1-18F9-43F5-9F2C-5FB22F292698}"
+          DTS:From="Package\Dimensions\Transform DimGeneralPracticeAddress"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Dimensions\Mirror DimGeneralPracticeAddress" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\ETL End - Complete"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{7a33df67-bf96-4aa6-8df9-292214968a67}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ETL End - Complete"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+          SQLTask:SqlStatementSource="EXEC [dbo].[uspExecutionEnd]&#xA;@PackageName = ?,&#xA;@UserName = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="System::PackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="System::UserName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\ETL Start - Start Logging"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{8ec90c1f-45cc-4c35-8745-8e335aa9e251}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="ETL Start - Start Logging"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{5C6F68DB-3598-48AD-AE95-3977C46E4740}"
+          SQLTask:SqlStatementSource="EXEC [dbo].[uspExecutionStart]&#xA;@PackageName = ?,&#xA;@UserName = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="System::PackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="System::UserName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Run Presentation"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:Description="Run Presentation"
+      DTS:DTSID="{d80079c4-1aab-4bb8-a99a-224873daf842}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Run Presentation"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>Presentation.dtsx</PackageName>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{92536AC1-6879-4F3B-927E-C3DF6AE5ED06}"
+      DTS:From="Package\Dimensions"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\ETL End - Complete" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{2FDEBA51-D9E6-4540-9903-B9A4BF516CD2}"
+      DTS:From="Package\ETL Start - Start Logging"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Dimensions" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{819D2DB2-20BA-4EA3-A61B-DB2E1ACBB2A8}"
+      DTS:From="Package\ETL End - Complete"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Run Presentation" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="240.666666666667,42"
+          Id="Package\Dimensions\Mirror DimGeneralPracticeAddress"
+          TopLeft="25.4999992425243,111.266663055817" />
+        <NodeLayout
+          Size="262,42"
+          Id="Package\Dimensions\Transform DimGeneralPracticeAddress"
+          TopLeft="22.2499990624687,33.9333300324281" />
+        <EdgeLayout
+          Id="Package\Dimensions.PrecedenceConstraints[Constraint]"
+          TopLeft="149.541665819163,75.9333300324281">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,35.3333330233892"
+              Start="0,0"
+              End="0,27.8333330233892">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27.8333330233892" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="326,218.666666666667"
+          Size="326,262"
+          Id="Package\Dimensions"
+          TopLeft="32.9166661761701,90.5666650472085" />
+        <NodeLayout
+          Size="174,42"
+          Id="Package\ETL End - Complete"
+          TopLeft="114.166664965451,381.333326514562" />
+        <NodeLayout
+          Size="198,42"
+          Id="Package\ETL Start - Start Logging"
+          TopLeft="91.666665300727,3.46666660467784" />
+        <NodeLayout
+          Size="162,42"
+          Id="Package\Run Presentation"
+          TopLeft="123.333331495523,462.799991724491" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="198.54166557081,352.566665047209">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,28.7666614673536"
+              Start="0,0"
+              End="0,21.2666614673536">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.2666614673536" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="193.291665738449,45.4666666046778">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.0999984425307"
+              Start="0,0"
+              End="0,37.5999984425307">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.5999984425307" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="202.749998230487,423.333326514562">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.4666652099293"
+              Start="0,0"
+              End="0,31.9666652099293">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.9666652099293" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
