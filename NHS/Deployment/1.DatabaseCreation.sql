@@ -103,9 +103,31 @@ CREATE TABLE [Stage].[ChemicalSubstance](
 ) ON [PRIMARY]
 GO
 
+
 PRINT '...Created [Stage].[ChemicalSubstance]...'
 
 PRINT '...Creating Transform Tables...'
+
+
+GO
+
+CREATE TABLE [Transform].[FactPrescription](
+	[SHAId] [varchar](3) NULL,
+	[PCTId] [varchar](3) NULL,
+	[GPId] [varchar](6) NULL,
+	[BNFId] [varchar](15) NULL,
+	[MedicineName] [varchar](40) NULL,
+	[Units] [int] NULL,
+	[NIC] [decimal](11, 2) NULL,
+	[ActCost] [decimal](11, 2) NULL,
+	[Qty] [int] NULL,
+	[PeriodId] [int] NULL,
+	[FileLogId] [int] NULL
+) ON [PRIMARY]
+GO
+
+
+PRINT '...Created [Transform].[FactPrescription]...'
 
 GO
 
@@ -144,6 +166,24 @@ CREATE TABLE [Mirror].[DimGeneralPracticeAddress](
 GO
 
 PRINT '...Created [Mirror].[DimGeneralPracticeAddress]...'
+
+GO
+
+CREATE TABLE [Mirror].[FactPrescription](
+	[SHAId] [varchar](3) NULL,
+	[PCTId] [varchar](3) NULL,
+	[GPId] [varchar](6) NULL,
+	[BNFId] [varchar](15) NULL,
+	[MedicineName] [varchar](40) NULL,
+	[Units] [int] NULL,
+	[NIC] [decimal](11, 2) NULL,
+	[ActCost] [decimal](11, 2) NULL,
+	[Qty] [int] NULL,
+	[PeriodId] [int] NULL
+) ON [PRIMARY]
+GO
+
+PRINT '...Created [Mirror].[FactPrescription]...'
 
 PRINT '...Creating Datawarehouse Tables...'
 
