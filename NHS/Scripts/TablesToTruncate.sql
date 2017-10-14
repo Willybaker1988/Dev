@@ -8,12 +8,14 @@ TRUNCATE TABLE [Mirror].[DimGeneralPracticeAddress]
 print '...Truncated table [Mirror].[DimGeneralPracticeAddress]'
 TRUNCATE TABLE [Datawarehouse].[DimGeneralPracticeAddress]
 print '...Truncated table [Datawarehouse].[DimGeneralPracticeAddress]'
+TRUNCATE TABLE [Datawarehouse].[DimProductType]
+print '...Truncated table [Datawarehouse].[DimProductType]'
 TRUNCATE TABLE [Stage].[ChemicalSubstance]
 print '...Truncated table [Stage].[ChemicalSubstance]'
 TRUNCATE TABLE [Stage].[GPAddress]
-print '...Truncated table  [Stage].[GPAddress]'
+print '...Truncated table [Stage].[GPAddress]'
 TRUNCATE TABLE [Stage].[Prescription]
-print '...Truncated table  [Stage].[Prescription]'
+print '...Truncated table [Stage].[Prescription]'
 TRUNCATE TABLE [DW_Framework].[NHS].[FileLoadLog]
 print '...Truncated table [DW_Framework].[NHS].[FileLoadLog]'
 TRUNCATE TABLE [DW_Framework].[NHS].[SSISExecutionLog]
