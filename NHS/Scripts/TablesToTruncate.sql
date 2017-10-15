@@ -6,6 +6,8 @@ TRUNCATE TABLE [Transform].[DimGeneralPracticeAddress]
 print '...Truncated table [Transform].[DimGeneralPracticeAddress]'
 TRUNCATE TABLE [Mirror].[DimGeneralPracticeAddress]
 print '...Truncated table [Mirror].[DimGeneralPracticeAddress]'
+TRUNCATE TABLE [Mirror].[DimProduct]
+print '...Truncated table [Mirror].[DimProduct]'
 TRUNCATE TABLE [Datawarehouse].[DimGeneralPracticeAddress]
 print '...Truncated table [Datawarehouse].[DimGeneralPracticeAddress]'
 TRUNCATE TABLE [Datawarehouse].[DimProductType]

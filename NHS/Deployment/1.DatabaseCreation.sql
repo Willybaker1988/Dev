@@ -185,6 +185,21 @@ GO
 
 PRINT '...Created [Mirror].[FactPrescription]...'
 
+GO
+
+CREATE TABLE [Mirror].[DimProduct](
+	[ProductId] [varchar](15) NULL,
+	[BNFCode] [varchar](15) NULL,
+	[ProductName] [varchar](40) NULL,
+	[BNFName] [varchar](40) NULL,
+	[ChemicalSubstanceId] [varchar](9) NULL
+) ON [PRIMARY]
+GO
+
+PRINT '...Created[Mirror].[DimProduct]...'
+
+
+
 PRINT '...Creating Datawarehouse Tables...'
 
 GO
@@ -205,6 +220,36 @@ CREATE TABLE [Datawarehouse].[DimGeneralPracticeAddress](
 GO
 
 PRINT '...Created [Datawarehouse].[DimGeneralPracticeAddress]...'
+
+
+GO
+
+CREATE TABLE [Datawarehouse].[DimProductType](
+	[DimProductTypeSkey] [int] IDENTITY(1,1) NOT NULL,
+	[ProductType] [varchar](150) NULL,
+	[ChemicalSubstanceId] [varchar](9) NULL,
+	[DateActiveFrom] [datetime] NULL
+) ON [PRIMARY]
+GO
+
+PRINT '...Created[Datawarehouse].[DimProductType]...'
+
+GO
+
+CREATE TABLE [Datawarehouse].[DimProduct](
+	[DimProductSkey] [int] IDENTITY(1,1) NOT NULL,
+	[ProductId] [varchar](15) NULL,
+	[BNFCode] [varchar](15) NULL,
+	[ProductName] [varchar](40) NULL,
+	[BNFName] [varchar](40) NULL,
+	[DimProductTypeSkey] [int] NULL,
+	[ProductType] [varchar](150) NULL,
+	[ChemicalSubstanceId] [varchar](9) NULL,
+	[DateActiveFrom] [datetime] NULL
+) ON [PRIMARY]
+GO
+
+PRINT '...Created[Datawarehouse].[DimProduct]...'
 
 PRINT '...Creating Functions'
 
