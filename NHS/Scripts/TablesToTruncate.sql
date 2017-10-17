@@ -12,6 +12,8 @@ TRUNCATE TABLE [Datawarehouse].[DimGeneralPracticeAddress]
 print '...Truncated table [Datawarehouse].[DimGeneralPracticeAddress]'
 TRUNCATE TABLE [Datawarehouse].[DimProductType]
 print '...Truncated table [Datawarehouse].[DimProductType]'
+TRUNCATE TABLE [Datawarehouse].[DimProduct]
+print '...Truncated table [Datawarehouse].[DimProduct]'
 TRUNCATE TABLE [Stage].[ChemicalSubstance]
 print '...Truncated table [Stage].[ChemicalSubstance]'
 TRUNCATE TABLE [Stage].[GPAddress]
