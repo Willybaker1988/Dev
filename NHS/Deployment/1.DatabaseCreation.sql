@@ -410,7 +410,7 @@ BEGIN
 		 @PackageName
 		,@UserName
 		,@Comment
-		,CONVERT(DATETIME,SYSUTCDATETIME())
+		,CONVERT(DATETIME,GETDATE())
 		,'Succeeded'
     )
 END
@@ -485,7 +485,7 @@ BEGIN
 		 @PackageName
 		,@UserName
 		,@Comment
-		,CONVERT(DATETIME,SYSUTCDATETIME())
+		,CONVERT(DATETIME,GETDATE())
 		,'Started'
     )
 END
@@ -513,7 +513,7 @@ BEGIN
 	@LoadValue INT = 0, 
 	@Comment NVARCHAR(255),
 	@UserName NVARCHAR(50) = (SELECT SUSER_NAME()),
-	@ActivityLogDateTimeCreated DATETIME = CONVERT(DATETIME,SYSUTCDATETIME())
+	@ActivityLogDateTimeCreated DATETIME = CONVERT(DATETIME,GETDATE())
 
 	IF OBJECT_ID('tempdb..#SourceFiles') IS NOT NULL
 		DROP TABLE #SourceFiles
@@ -638,7 +638,7 @@ BEGIN
 	SET NOCOUNT ON;
 
 	DECLARE @WhichLogType   VARCHAR(10)		= @LogType
-	DECLARE @FileLoadedDate DATETIME		= CONVERT(DATETIME,SYSUTCDATETIME())
+	DECLARE @FileLoadedDate DATETIME		= CONVERT(DATETIME,GETDATE())
 	DECLARE @Comment		NVARCHAR(250)
 	DECLARE @UserName		NVARCHAR(50)	= (SELECT SUSER_NAME())
 	DECLARE @FileType		NVARCHAR(1)		= (SELECT [FileType] FROM [NHS].[FileLoadLog] WHERE [FileLogId] = @FileLogId)
@@ -705,7 +705,7 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-	DECLARE @FileLoadedDate DATETIME = CONVERT(DATETIME,SYSUTCDATETIME())
+	DECLARE @FileLoadedDate DATETIME = CONVERT(DATETIME,GETDATE())
 	DECLARE @Comment		NVARCHAR(250) = 'FileLoadLog table updated and files processed, FileLoadedDate ('+CONVERT(VARCHAR(25),@FileLoadedDate,120)+').'
 	,@UserName NVARCHAR(50) = (SELECT SUSER_NAME())
 
