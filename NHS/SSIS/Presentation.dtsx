@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="Presentation"
   DTS:PackageType="5"
-  DTS:VersionBuild="35"
-  DTS:VersionGUID="{728AD64F-0237-4117-9CC7-CFD6F7089886}">
+  DTS:VersionBuild="41"
+  DTS:VersionGUID="{33106AC3-CAE0-47C8-86DA-AD520031B55F}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -64,147 +64,296 @@
       <DTS:Variables />
       <DTS:Executables>
         <DTS:Executable
-          DTS:refId="Package\Dimensions\Datawarehouse Dim Product"
-          DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:Description="Dim Product"
-          DTS:DTSID="{5237C0DD-BED7-4A06-8146-0BA72467ABCB}"
-          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:refId="Package\Dimensions\Location"
+          DTS:CreationName="STOCK:SEQUENCE"
+          DTS:Description="Sequence Container"
+          DTS:DTSID="{C9FEBCFC-916E-487D-B253-61EEF793B4EB}"
+          DTS:ExecutableType="STOCK:SEQUENCE"
           DTS:LocaleID="-1"
-          DTS:ObjectName="Datawarehouse Dim Product"
-          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="0">
+          DTS:ObjectName="Location">
           <DTS:Variables />
-          <DTS:ObjectData>
-            <SQLTask:SqlTaskData
-              SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="/*&#xA;&#x9;Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@UserName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#x9;&#x9;&#x9;&#x9;&#xA;  ,@ActivityLogDateTimeCreated&#x9;&#x9;=&#x9;@ActivityLogDateTimeCreated&#xA;  ,@Type&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@Status&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;'Started'&#xA;  ,@Comment&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;'Checking for new [Datawarehouse].[DimProduct] records'&#xA;&#x9;&#x9;&#xA;&#xA;MERGE INTO [Datawarehouse].[DimProduct] AS T&#xA;USING (  &#xA;&#x9;SELECT &#xA;&#x9;&#x9;P.[ProductId]&#xA;&#x9;   ,P.[BNFCode]&#xA;&#x9;   ,P.[ProductName]&#xA;&#x9;   ,P.[BNFName]&#xA;&#x9;   ,PT.[DimProductTypeSkey]&#xA;&#x9;   ,PT.[ProductType]&#xA;&#x9;   ,PT.[ChemicalSubstanceId]&#xA;&#x9;   ,[DateActiveFrom]&#x9;=&#x9;GETDATE()&#xA;&#x9;FROM [Mirror].[DimProduct] P&#xA;&#x9;LEFT OUTER JOIN&#x9;[Datawarehouse].[DimProductType] PT ON PT.[ChemicalSubstanceId] = P.[ChemicalSubstanceId]&#xA;)AS S&#xA;ON &#xA;&#x9;T.[BNFCode] = S.[BNFCode]&#xA;WHEN NOT MATCHED &#xA;&#x9;THEN INSERT &#xA;&#x9;(&#xA;&#x9;&#x9;[ProductId], &#xA;&#x9;&#x9;[BNFCode], &#xA;&#x9;&#x9;[ProductName],&#xA;&#x9;&#x9;[BNFName],&#xA;&#x9;&#x9;[DimProductTypeSkey],&#xA;&#x9;&#x9;[ProductType],&#xA;&#x9;&#x9;[ChemicalSubstanceId],&#xA;&#x9;&#x9;[DateActiveFrom]&#xA;&#x9;) &#xA;&#x9;VALUES &#xA;&#x9;(&#xA;&#x9;&#x9;S.[ProductId], &#xA;&#x9;&#x9;S.[BNFCode], &#xA;&#x9;&#x9;S.[ProductName],&#xA;&#x9;&#x9;S.[BNFName],&#xA;&#x9;&#x9;S.[DimProductTypeSkey],&#xA;&#x9;&#x9;S.[ProductType],&#xA;&#x9;&#x9;S.[ChemicalSubstanceId],&#xA;&#x9;&#x9;S.[DateActiveFrom]&#xA;&#x9;)&#xA;&#x9;;&#xA;SET @InsertCount&#x9;&#x9;&#x9;&#x9;=&#x9;@@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)&#x9;&#x9;=&#x9;''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProduct]'&#xA;SET @ActivityLogDateTimeCreated&#x9;&#x9;=&#x9;GETDATE()&#xA;/*&#xA;&#x9;Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@UserName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#x9;&#x9;&#x9;&#x9;&#xA;  ,@ActivityLogDateTimeCreated&#x9;&#x9;=&#x9;@ActivityLogDateTimeCreated&#xA;  ,@Type&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@Status&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;'Succeeded'&#xA;  ,@Comment&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;@Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="0"
-                SQLTask:DtsVariableName="$Project::Archived"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="1"
-                SQLTask:DtsVariableName="$Project::Archived"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="2"
-                SQLTask:DtsVariableName="$Project::Archived"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="3"
-                SQLTask:DtsVariableName="$Project::Archived"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="4"
-                SQLTask:DtsVariableName="$Project::Archived"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="5"
-                SQLTask:DtsVariableName="$Project::Archived"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-            </SQLTask:SqlTaskData>
-          </DTS:ObjectData>
+          <DTS:Executables>
+            <DTS:Executable
+              DTS:refId="Package\Dimensions\Location\Datawarehouse DimGeneralPracticeAddress"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:Description="Transform DimGeneralPracticeAddress"
+              DTS:DTSID="{04225a03-9003-4ee0-a4fe-78088b4e8c4e}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="Datawarehouse DimGeneralPracticeAddress"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="0">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+                  SQLTask:SqlStatementSource="DECLARE @DateActiveFrom datetime = getdate();&#xA;DECLARE @DateActiveTo datetime = CAST('9999-12-31 00:00:00.000' AS DATETIME);&#xA;DECLARE @IsActive BIT = 1;&#xA;&#xA;MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT&#xA;USING [NHS].[Mirror].[DimGeneralPracticeAddress] AS SRC &#xA; ON TGT.[GPId] = SRC.[GPId] &#xA; AND TGT.[PostCode] = SRC.[PostCode]&#xA;WHEN NOT MATCHED THEN --WHEN NOT MATCHED THEN INSERT NEW GP PRACTICES WITH NEW POSTCODES FOUND IN MIRROR (NEW GP RECORDS).&#xA;INSERT&#xA;(&#xA;     [GPId]&#xA;    ,[GeneralPracticePrimarySurgeryName]&#xA;    ,[GeneralPracticeSecondarySurgeryName]&#xA;    ,[AddressLine1]&#xA;    ,[AddressLine2]&#xA;    ,[AddressLine3]&#xA;    ,[PostCode]&#xA; ,[IsActive]&#xA; ,[DateActiveFrom]&#xA; ,[DateActiveTo]&#xA;)&#xA;VALUES&#xA;(&#xA;     SRC.[GPId]&#xA;    ,SRC.[GeneralPracticePrimarySurgeryName]&#xA;    ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;    ,SRC.[AddressLine1]&#xA;    ,SRC.[AddressLine2]&#xA;    ,SRC.[AddressLine3]&#xA;    ,SRC.[PostCode]&#xA; ,@IsActive&#xA; ,@DateActiveFrom&#xA; ,@DateActiveto&#xA;)&#xA;WHEN MATCHED -- FAKE CONDITION (WILL NEVER BE TRUE).&#xA;   AND (&#xA;     TGT.[PostCode] &lt;&gt; SRC.[PostCode]&#xA;    )&#xA; THEN UPDATE SET&#xA;      tgt.[IsActive]   = 0&#xA;     ,tgt.[DateActiveTo]  = @DateActiveFrom&#xA;    --)&#xA;OUTPUT&#xA;  SRC.[GPId]&#xA; ,SRC.[GeneralPracticePrimarySurgeryName]&#xA; ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA; ,SRC.[AddressLine1]&#xA; ,SRC.[AddressLine2]&#xA; ,SRC.[AddressLine3]&#xA; ,SRC.[PostCode]&#xA; ,SRC.[FileLogId]&#xA; ,SRC.[DateCreated]&#xA; ,SRC.[DateModified]&#xA; ,$Action AS [MergeAction];&#xA;&#xA;&#xA;MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT&#xA;USING [NHS].[Mirror].[DimGeneralPracticeAddress] AS SRC &#xA; ON TGT.[GPId] = SRC.[GPId] &#xA;WHEN NOT MATCHED THEN --WHEN NOT MATCHED THEN INSERT NEW GPS FOUND IN MIRROR (NEW GP RECORDS).&#xA;INSERT&#xA;(&#xA;     [GPId]&#xA;    ,[GeneralPracticePrimarySurgeryName]&#xA;    ,[GeneralPracticeSecondarySurgeryName]&#xA;    ,[AddressLine1]&#xA;    ,[AddressLine2]&#xA;    ,[AddressLine3]&#xA;    ,[PostCode]&#xA; ,[IsActive]&#xA; ,[DateActiveFrom]&#xA; ,[DateActiveTo]&#xA;)&#xA;VALUES&#xA;(&#xA;     SRC.[GPId]&#xA;    ,SRC.[GeneralPracticePrimarySurgeryName]&#xA;    ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;    ,SRC.[AddressLine1]&#xA;    ,SRC.[AddressLine2]&#xA;    ,SRC.[AddressLine3]&#xA;    ,SRC.[PostCode]&#xA; ,@IsActive&#xA; ,@DateActiveFrom&#xA; ,@DateActiveto&#xA;)&#xA;WHEN MATCHED -- FOR TYPE 2 RECORDS, UPDATE SCD RECORDS FOR EXISTING RECORDS IN THE DATAWAREHOUSE TABLE WHERE THE ADDRESS HS CHANGED BY UPDATING [IsActive] AND DateActiveTo.&#xA;   AND (&#xA;     TGT.[PostCode] &lt;&gt; SRC.[PostCode]&#xA;    )&#xA; THEN UPDATE SET&#xA;      tgt.[IsActive]   = 0&#xA;     ,tgt.[DateActiveTo]  = @DateActiveFrom&#xA;    --)&#xA;OUTPUT&#xA;  SRC.[GPId]&#xA; ,SRC.[GeneralPracticePrimarySurgeryName]&#xA; ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA; ,SRC.[AddressLine1]&#xA; ,SRC.[AddressLine2]&#xA; ,SRC.[AddressLine3]&#xA; ,SRC.[PostCode]&#xA; ,SRC.[FileLogId]&#xA; ,SRC.[DateCreated]&#xA; ,SRC.[DateModified]&#xA; ,$Action AS [MergeAction];&#xA; &#xA;&#xA;&#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package\Dimensions\Location\Datawarehouse DimHealthAuthority"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:Description="Execute SQL Task"
+              DTS:DTSID="{36ecc015-2e95-487d-a2f2-0aef8eea25c7}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="Datawarehouse DimHealthAuthority"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="0">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted HealthAuthorities records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimHealthAuthority]  records'&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimHealthAuthority] AS T&#xA; USING &#xA; (&#xA;  SELECT   &#xA;   [SHA]   = UPPER([sha]),&#xA;   [DateCreated] = CAST(GETDATE() AS DATE)&#xA;  FROM [NHS].[Stage].[Prescription]&#xA;  GROUP BY&#xA;   [SHA]   &#xA;  --For future reference will need to add in a lookup file of all the SHA names and join that table here.&#xA; ) AS S&#xA; ON&#xA;  T.[HealthAuthorityId] = S.[SHA]&#xA; WHEN NOT MATCHED THEN INSERT ([HealthAuthorityId], DateActiveFrom)  VALUES (S.[SHA] , S.[DateCreated]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimHealthAuthority]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted HealthAuthorities records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="0"
+                    SQLTask:DtsVariableName="System::PackageName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="1"
+                    SQLTask:DtsVariableName="System::UserName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="2"
+                    SQLTask:DtsVariableName="User::Phase"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="3"
+                    SQLTask:DtsVariableName="System::PackageName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="4"
+                    SQLTask:DtsVariableName="System::UserName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="5"
+                    SQLTask:DtsVariableName="User::Phase"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                </SQLTask:SqlTaskData>
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package\Dimensions\Location\Datawarehouse DimPrimaryCareTrust"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:Description="Datawarehouse DimPrimaryCareTrust"
+              DTS:DTSID="{700baf88-c925-4d67-86cd-b55c3fdc1e1e}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="Datawarehouse DimPrimaryCareTrust"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="0">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted HealthAuthorities records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimPrimaryCareTrust]  records'&#xA;&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimPrimaryCareTrust] AS T&#xA; USING &#xA; (&#xA;  SELECT   &#xA;   [PCT]      = UPPER([PCT]),&#xA;   [DateCreated]    = CAST(GETDATE() AS DATE),&#xA;   [DimHealthAuthroritySkey] &#xA;  FROM &#xA;   [NHS].[Stage].[Prescription] F&#xA;  INNER JOIN&#xA;   [NHS].[Datawarehouse].[DimHealthAuthority] HA ON F.SHA = HA.[HealthAuthorityId]&#xA;  --Potentially a join here to PCT/CCG Transform table to find out the name fro the [DimPrimaryCareTrust][PrimaryCareTrustName] 　&#xA;  GROUP BY&#xA;   [PCT], &#xA;   [DimHealthAuthroritySkey]&#xA;&#xA; ) AS S&#xA; ON&#xA;  T.[PrimaryTrustId] = S.[PCT]&#xA; WHEN NOT MATCHED THEN INSERT ([PrimaryTrustId],[DimHealthAuthroritySkey], [DateActiveFrom])  VALUES (S.[PCT] ,S.[DimHealthAuthroritySkey], S.[DateCreated]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimPrimaryCareTrust]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted HealthAuthorities records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="0"
+                    SQLTask:DtsVariableName="System::PackageName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="1"
+                    SQLTask:DtsVariableName="System::UserName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="2"
+                    SQLTask:DtsVariableName="User::Phase"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="3"
+                    SQLTask:DtsVariableName="System::PackageName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="4"
+                    SQLTask:DtsVariableName="System::UserName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="5"
+                    SQLTask:DtsVariableName="User::Phase"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                </SQLTask:SqlTaskData>
+              </DTS:ObjectData>
+            </DTS:Executable>
+          </DTS:Executables>
+          <DTS:PrecedenceConstraints>
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package\Dimensions\Location.PrecedenceConstraints[Constraint 1]"
+              DTS:CreationName=""
+              DTS:DTSID="{a52f2146-377f-4190-89bd-42c8421432d7}"
+              DTS:From="Package\Dimensions\Location\Datawarehouse DimHealthAuthority"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint 1"
+              DTS:To="Package\Dimensions\Location\Datawarehouse DimPrimaryCareTrust" />
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package\Dimensions\Location.PrecedenceConstraints[Constraint 2]"
+              DTS:CreationName=""
+              DTS:DTSID="{06f637c7-48ef-432c-8324-69027e56b248}"
+              DTS:From="Package\Dimensions\Location\Datawarehouse DimPrimaryCareTrust"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint 2"
+              DTS:To="Package\Dimensions\Location\Datawarehouse DimGeneralPracticeAddress" />
+          </DTS:PrecedenceConstraints>
         </DTS:Executable>
         <DTS:Executable
-          DTS:refId="Package\Dimensions\Datawarehouse DimGeneralPracticeAddress"
-          DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:Description="Transform DimGeneralPracticeAddress"
-          DTS:DTSID="{7ce5145b-52eb-4f80-9830-bcd4efbc622f}"
-          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:refId="Package\Dimensions\Product"
+          DTS:CreationName="STOCK:SEQUENCE"
+          DTS:Description="Sequence Container"
+          DTS:DTSID="{A9C1F245-3683-4DF6-9CC8-9E7F7E18BB1D}"
+          DTS:ExecutableType="STOCK:SEQUENCE"
           DTS:LocaleID="-1"
-          DTS:ObjectName="Datawarehouse DimGeneralPracticeAddress"
-          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="1">
+          DTS:ObjectName="Product">
           <DTS:Variables />
-          <DTS:ObjectData>
-            <SQLTask:SqlTaskData
-              SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="DECLARE @DateActiveFrom datetime = getdate();&#xA;DECLARE @DateActiveTo&#x9;datetime = CAST('9999-12-31 00:00:00.000' AS DATETIME);&#xA;DECLARE @IsActive BIT = 1;&#xA;&#xA;MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT&#xA;USING [NHS].[Mirror].[DimGeneralPracticeAddress] AS SRC &#xA;&#x9;ON TGT.[GPId] = SRC.[GPId] &#xA;&#x9;AND TGT.[PostCode] = SRC.[PostCode]&#xA;WHEN NOT MATCHED THEN --WHEN NOT MATCHED THEN INSERT NEW GP PRACTICES WITH NEW POSTCODES FOUND IN MIRROR (NEW GP RECORDS).&#xA;INSERT&#xA;(&#xA;     [GPId]&#xA;    ,[GeneralPracticePrimarySurgeryName]&#xA;    ,[GeneralPracticeSecondarySurgeryName]&#xA;    ,[AddressLine1]&#xA;    ,[AddressLine2]&#xA;    ,[AddressLine3]&#xA;    ,[PostCode]&#xA;&#x9;,[IsActive]&#xA;&#x9;,[DateActiveFrom]&#xA;&#x9;,[DateActiveTo]&#xA;)&#xA;VALUES&#xA;(&#xA;     SRC.[GPId]&#xA;    ,SRC.[GeneralPracticePrimarySurgeryName]&#xA;    ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;    ,SRC.[AddressLine1]&#xA;    ,SRC.[AddressLine2]&#xA;    ,SRC.[AddressLine3]&#xA;    ,SRC.[PostCode]&#xA;&#x9;,@IsActive&#xA;&#x9;,@DateActiveFrom&#xA;&#x9;,@DateActiveto&#xA;)&#xA;WHEN MATCHED -- FAKE CONDITION (WILL NEVER BE TRUE).&#xA;&#x9;&#x9;&#x9;AND (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;TGT.[PostCode] &lt;&gt; SRC.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;THEN UPDATE SET&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; tgt.[IsActive]&#x9;&#x9;&#x9;=&#x9;0&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,tgt.[DateActiveTo]&#x9;&#x9;=&#x9;@DateActiveFrom&#xA;&#x9;&#x9;&#x9;&#x9;--)&#xA;OUTPUT&#xA;&#x9; SRC.[GPId]&#xA;&#x9;,SRC.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;,SRC.[AddressLine1]&#xA;&#x9;,SRC.[AddressLine2]&#xA;&#x9;,SRC.[AddressLine3]&#xA;&#x9;,SRC.[PostCode]&#xA;&#x9;,SRC.[FileLogId]&#xA;&#x9;,SRC.[DateCreated]&#xA;&#x9;,SRC.[DateModified]&#xA;&#x9;,$Action AS [MergeAction];&#xA;&#xA;&#xA;MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT&#xA;USING [NHS].[Mirror].[DimGeneralPracticeAddress] AS SRC &#xA;&#x9;ON TGT.[GPId] = SRC.[GPId] &#xA;WHEN NOT MATCHED THEN --WHEN NOT MATCHED THEN INSERT NEW GPS FOUND IN MIRROR (NEW GP RECORDS).&#xA;INSERT&#xA;(&#xA;     [GPId]&#xA;    ,[GeneralPracticePrimarySurgeryName]&#xA;    ,[GeneralPracticeSecondarySurgeryName]&#xA;    ,[AddressLine1]&#xA;    ,[AddressLine2]&#xA;    ,[AddressLine3]&#xA;    ,[PostCode]&#xA;&#x9;,[IsActive]&#xA;&#x9;,[DateActiveFrom]&#xA;&#x9;,[DateActiveTo]&#xA;)&#xA;VALUES&#xA;(&#xA;     SRC.[GPId]&#xA;    ,SRC.[GeneralPracticePrimarySurgeryName]&#xA;    ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;    ,SRC.[AddressLine1]&#xA;    ,SRC.[AddressLine2]&#xA;    ,SRC.[AddressLine3]&#xA;    ,SRC.[PostCode]&#xA;&#x9;,@IsActive&#xA;&#x9;,@DateActiveFrom&#xA;&#x9;,@DateActiveto&#xA;)&#xA;WHEN MATCHED -- FOR TYPE 2 RECORDS, UPDATE SCD RECORDS FOR EXISTING RECORDS IN THE DATAWAREHOUSE TABLE WHERE THE ADDRESS HS CHANGED BY UPDATING [IsActive] AND DateActiveTo.&#xA;&#x9;&#x9;&#x9;AND (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;TGT.[PostCode] &lt;&gt; SRC.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;THEN UPDATE SET&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; tgt.[IsActive]&#x9;&#x9;&#x9;=&#x9;0&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,tgt.[DateActiveTo]&#x9;&#x9;=&#x9;@DateActiveFrom&#xA;&#x9;&#x9;&#x9;&#x9;--)&#xA;OUTPUT&#xA;&#x9; SRC.[GPId]&#xA;&#x9;,SRC.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;,SRC.[AddressLine1]&#xA;&#x9;,SRC.[AddressLine2]&#xA;&#x9;,SRC.[AddressLine3]&#xA;&#x9;,SRC.[PostCode]&#xA;&#x9;,SRC.[FileLogId]&#xA;&#x9;,SRC.[DateCreated]&#xA;&#x9;,SRC.[DateModified]&#xA;&#x9;,$Action AS [MergeAction];&#xA;&#x9;&#xA;&#xA;&#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-          </DTS:ObjectData>
-        </DTS:Executable>
-        <DTS:Executable
-          DTS:refId="Package\Dimensions\Datawarehouse DimProductType"
-          DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:Description="Transform DimGeneralPracticeAddress"
-          DTS:DTSID="{2c846645-1c25-4f7a-914f-398e36fba2f3}"
-          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
-          DTS:LocaleID="-1"
-          DTS:ObjectName="Datawarehouse DimProductType"
-          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="0">
-          <DTS:Variables />
-          <DTS:ObjectData>
-            <SQLTask:SqlTaskData
-              SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="/*&#xA;&#x9;Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@UserName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#x9;&#x9;&#x9;&#x9;&#xA;  ,@ActivityLogDateTimeCreated&#x9;&#x9;=&#x9;@ActivityLogDateTimeCreated&#xA;  ,@Type&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@Status&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;'Started'&#xA;  ,@Comment&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;'Checking for new [Datawarehouse].[DimProductType] records'&#xA;&#xA;&#x9;MERGE INTO &#xA;&#x9;&#x9;[NHS].[Datawarehouse].[DimProductType] AS T&#xA;&#x9;USING &#xA;&#x9;(&#xA;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9; [CHEMSUBID]&#x9;= UPPER([CHEMSUBID])&#xA;&#x9;&#x9;&#x9;,[CHEMSUBNAME]&#x9;= UPPER([CHEMSUBNAME]) &#xA;&#x9;&#x9;&#x9;,[DateCreated] = GETDATE()&#xA;&#x9;&#x9;FROM [NHS].[Stage].[ChemicalSubstance]&#xA;&#xA;&#x9;) AS S&#xA;&#x9;ON&#xA;&#x9;&#x9;T.ChemicalSubstanceId = S.CHEMSUBID&#xA;&#x9;WHEN NOT MATCHED THEN INSERT (ChemicalSubstanceId, ProductType, DateActiveFrom)  VALUES (S.[CHEMSUBID], S.[CHEMSUBNAME], S.[DateCreated]);&#xA;&#x9;SET @InsertCount&#x9;&#x9;&#x9;&#x9;=&#x9;@@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)&#x9;&#x9;=&#x9;''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProductType]'&#xA;SET @ActivityLogDateTimeCreated&#x9;&#x9;=&#x9;GETDATE()&#xA;/*&#xA;&#x9;Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@UserName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#x9;&#x9;&#x9;&#x9;&#xA;  ,@ActivityLogDateTimeCreated&#x9;&#x9;=&#x9;@ActivityLogDateTimeCreated&#xA;  ,@Type&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@Status&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;'Succeeded'&#xA;  ,@Comment&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;@Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="0"
-                SQLTask:DtsVariableName="System::PackageName"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="130"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="1"
-                SQLTask:DtsVariableName="System::UserName"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="130"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="2"
-                SQLTask:DtsVariableName="User::Phase"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="130"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="3"
-                SQLTask:DtsVariableName="System::PackageName"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="130"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="4"
-                SQLTask:DtsVariableName="System::UserName"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="130"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="5"
-                SQLTask:DtsVariableName="User::Phase"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="130"
-                SQLTask:ParameterSize="-1" />
-            </SQLTask:SqlTaskData>
-          </DTS:ObjectData>
+          <DTS:Executables>
+            <DTS:Executable
+              DTS:refId="Package\Dimensions\Product\Datawarehouse Dim Product"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:Description="Dim Product"
+              DTS:DTSID="{10a06bd7-8b96-43b3-b265-7934931f87f1}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="Datawarehouse Dim Product"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="1">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimProduct] records'&#xA;  &#xA;&#xA;MERGE INTO [Datawarehouse].[DimProduct] AS T&#xA;USING (  &#xA; SELECT &#xA;  P.[ProductId]&#xA;    ,P.[BNFCode]&#xA;    ,P.[ProductName]&#xA;    ,P.[BNFName]&#xA;    ,PT.[DimProductTypeSkey]&#xA;    ,PT.[ProductType]&#xA;    ,PT.[ChemicalSubstanceId]&#xA;    ,[DateActiveFrom] = GETDATE()&#xA; FROM [Mirror].[DimProduct] P&#xA; LEFT OUTER JOIN [Datawarehouse].[DimProductType] PT ON PT.[ChemicalSubstanceId] = P.[ChemicalSubstanceId]&#xA;)AS S&#xA;ON &#xA; T.[BNFCode] = S.[BNFCode]&#xA;WHEN NOT MATCHED &#xA; THEN INSERT &#xA; (&#xA;  [ProductId], &#xA;  [BNFCode], &#xA;  [ProductName],&#xA;  [BNFName],&#xA;  [DimProductTypeSkey],&#xA;  [ProductType],&#xA;  [ChemicalSubstanceId],&#xA;  [DateActiveFrom]&#xA; ) &#xA; VALUES &#xA; (&#xA;  S.[ProductId], &#xA;  S.[BNFCode], &#xA;  S.[ProductName],&#xA;  S.[BNFName],&#xA;  S.[DimProductTypeSkey],&#xA;  S.[ProductType],&#xA;  S.[ChemicalSubstanceId],&#xA;  S.[DateActiveFrom]&#xA; )&#xA; ;&#xA;SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProduct]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="0"
+                    SQLTask:DtsVariableName="System::PackageName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="1"
+                    SQLTask:DtsVariableName="System::UserName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="2"
+                    SQLTask:DtsVariableName="User::Phase"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="3"
+                    SQLTask:DtsVariableName="System::PackageName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="4"
+                    SQLTask:DtsVariableName="System::UserName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="5"
+                    SQLTask:DtsVariableName="User::Phase"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                </SQLTask:SqlTaskData>
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package\Dimensions\Product\Datawarehouse DimProductType"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:Description="Transform DimGeneralPracticeAddress"
+              DTS:DTSID="{2f588af0-4341-4a74-84af-3a5619d553a7}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="Datawarehouse DimProductType"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="1">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
+                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimProductType] records'&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimProductType] AS T&#xA; USING &#xA; (&#xA;  SELECT &#xA;    [CHEMSUBID] = UPPER([CHEMSUBID])&#xA;   ,[CHEMSUBNAME] = UPPER([CHEMSUBNAME]) &#xA;   ,[DateCreated] = GETDATE()&#xA;  FROM [NHS].[Stage].[ChemicalSubstance]&#xA;&#xA; ) AS S&#xA; ON&#xA;  T.ChemicalSubstanceId = S.CHEMSUBID&#xA; WHEN NOT MATCHED THEN INSERT (ChemicalSubstanceId, ProductType, DateActiveFrom)  VALUES (S.[CHEMSUBID], S.[CHEMSUBNAME], S.[DateCreated]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProductType]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="0"
+                    SQLTask:DtsVariableName="System::PackageName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="130"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="1"
+                    SQLTask:DtsVariableName="System::UserName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="130"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="2"
+                    SQLTask:DtsVariableName="User::Phase"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="130"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="3"
+                    SQLTask:DtsVariableName="System::PackageName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="130"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="4"
+                    SQLTask:DtsVariableName="System::UserName"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="130"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="5"
+                    SQLTask:DtsVariableName="User::Phase"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="130"
+                    SQLTask:ParameterSize="-1" />
+                </SQLTask:SqlTaskData>
+              </DTS:ObjectData>
+            </DTS:Executable>
+          </DTS:Executables>
+          <DTS:PrecedenceConstraints>
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package\Dimensions\Product.PrecedenceConstraints[Constraint]"
+              DTS:CreationName=""
+              DTS:DTSID="{920bb2f0-01b9-4b12-a6ed-35b8ca0b6bce}"
+              DTS:From="Package\Dimensions\Product\Datawarehouse DimProductType"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint"
+              DTS:To="Package\Dimensions\Product\Datawarehouse Dim Product" />
+          </DTS:PrecedenceConstraints>
         </DTS:Executable>
       </DTS:Executables>
-      <DTS:PrecedenceConstraints>
-        <DTS:PrecedenceConstraint
-          DTS:refId="Package\Dimensions.PrecedenceConstraints[Constraint]"
-          DTS:CreationName=""
-          DTS:DTSID="{4EFA4E90-C625-4183-BF0E-353790C1882E}"
-          DTS:From="Package\Dimensions\Datawarehouse DimProductType"
-          DTS:LogicalAnd="True"
-          DTS:ObjectName="Constraint"
-          DTS:To="Package\Dimensions\Datawarehouse Dim Product" />
-      </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\ETL End - Complete"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
-      DTS:Disabled="True"
       DTS:DTSID="{ea8f4df2-e98f-4b68-a4ec-347eda291de4}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
@@ -235,7 +384,6 @@
       DTS:refId="Package\ETL Start - Start Logging"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
-      DTS:Disabled="True"
       DTS:DTSID="{10e2024a-291c-438b-b0ce-789daa86703f}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
@@ -294,31 +442,105 @@
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
+          Size="174,42"
+          Id="Package\ETL End - Complete"
+          TopLeft="456.398803617007,581.490471960845" />
+        <NodeLayout
+          Size="198,42"
+          Id="Package\ETL Start - Start Logging"
+          TopLeft="448.869040930377,11.1880958895314" />
+        <NodeLayout
           Size="286,42"
-          Id="Package\Dimensions\Datawarehouse DimGeneralPracticeAddress"
-          TopLeft="11.7499999068677,39.9999965906143" />
+          Id="Package\Dimensions\Location\Datawarehouse DimGeneralPracticeAddress"
+          TopLeft="22.5000005587936,179.285710776704" />
         <NodeLayout
-          Size="235.333333333334,42"
-          Id="Package\Dimensions\Datawarehouse DimProductType"
-          TopLeft="320.999994610747,39.7333317526181" />
+          Size="248.666666666667,42"
+          Id="Package\Dimensions\Location\Datawarehouse DimHealthAuthority"
+          TopLeft="36.928570736732,17.7500007554889" />
         <NodeLayout
-          Size="215.333333333334,42"
-          Id="Package\Dimensions\Datawarehouse Dim Product"
-          TopLeft="323.4999942258,132.142853036097" />
+          Size="263.333333333334,58.6666666666667"
+          Id="Package\Dimensions\Location\Datawarehouse DimPrimaryCareTrust"
+          TopLeft="36.3333326503636,88.7738095542505" />
         <EdgeLayout
-          Id="Package\Dimensions.PrecedenceConstraints[Constraint]"
-          TopLeft="434.91666108494,81.7333317526181">
+          Id="Package\Dimensions\Location.PrecedenceConstraints[Constraint 1]"
+          TopLeft="164.630951693548,59.7500007554889">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,50.4095212834791"
+              EndConnector="0,29.0238087987617"
               Start="0,0"
-              End="0,42.9095212834791">
+              End="0,21.5238087987617">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,42.9095212834791" />
+                    End="0,21.5238087987617" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Dimensions\Location.PrecedenceConstraints[Constraint 2]"
+          TopLeft="166.749999937912,147.440476220917">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,31.8452345557867"
+              Start="0,0"
+              End="0,24.3452345557867">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.3452345557867" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Need to change DimGenrealPracticeAddress SP and table to incluide the DimPrimaryTrustSkey"
+          ParentId="Package\Dimensions\Location"
+          FontInfo="{assembly:Null}"
+          Size="277.333333333334,74"
+          Id="68105c53-aec2-4fa5-b95a-4ff2793b92a7"
+          TopLeft="26.1666651144624,258.16665926675" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="344,394"
+          Size="344,437.333333333334"
+          Id="Package\Dimensions\Location"
+          TopLeft="13.6785702710707,13.6071403250099" />
+        <NodeLayout
+          Size="215.333333333334,42"
+          Id="Package\Dimensions\Product\Datawarehouse Dim Product"
+          TopLeft="45.833333196739,107.373807803066" />
+        <NodeLayout
+          Size="235.333333333334,42"
+          Id="Package\Dimensions\Product\Datawarehouse DimProductType"
+          TopLeft="38.1250003259629,17.7500007554889" />
+        <EdgeLayout
+          Id="Package\Dimensions\Product.PrecedenceConstraints[Constraint]"
+          TopLeft="154.645833428018,59.7500007554888">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,47.6238070475771"
+              Start="0,0"
+              End="0,40.1238070475771">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.1238070475771" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -330,32 +552,43 @@
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="606,244.666666666667"
-          Size="606,287.333333333334"
+          PanelSize="341.333333333334,335.333333333334"
+          Size="341.333333333334,378.666666666667"
+          Id="Package\Dimensions\Product"
+          TopLeft="380.791660038754,12.9999979853631" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="774.666666666667,515.333333333334"
+          Size="774.666666666667,558"
           Id="Package\Dimensions"
-          TopLeft="63.6904761354838,85.2571424055098" />
-        <NodeLayout
-          Size="174,42"
-          Id="Package\ETL End - Complete"
-          TopLeft="263.690473155252,397.990474390586" />
-        <NodeLayout
-          Size="198,42"
-          Id="Package\ETL Start - Start Logging"
-          TopLeft="269.702376933502,18.0452377725641" />
+          TopLeft="226.190473714045,85.2571424055097" />
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="367.696426534493,60.0452377725641">
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="613.523807047378,643.25714240551">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,25.2119046329457"
+              EndConnector="-70.125003430371,-61.7666704446644"
               Start="0,0"
-              End="0,17.7119046329457">
+              End="-70.125003430371,-54.2666704446644">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,17.7119046329457" />
+                    End="0,-26.8833352223322" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-26.8833352223322"
+                    Point2="0,-30.8833352223322"
+                    Point3="-4,-30.8833352223322" />
+                  <mssgle:LineSegment
+                    End="-66.125003430371,-30.8833352223322" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-66.125003430371,-30.8833352223322"
+                    Point2="-70.125003430371,-30.8833352223322"
+                    Point3="-70.125003430371,-34.8833352223322" />
+                  <mssgle:LineSegment
+                    End="-70.125003430371,-54.2666704446644" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -365,31 +598,31 @@
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="366.690476135484,372.590475738843">
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="547.869040930377,53.1880958895314">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-16.0000029802318,25.3999986517429"
+              EndConnector="65.654766117001,32.0690465159783"
               Start="0,0"
-              End="-16.0000029802318,17.8999986517429">
+              End="65.654766117001,24.5690465159783">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,8.69999932587143" />
+                    End="0,12.0345232579892" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,8.69999932587143"
-                    Point2="0,12.6999993258714"
-                    Point3="-4,12.6999993258714" />
+                    Point1="0,12.0345232579892"
+                    Point2="0,16.0345232579892"
+                    Point3="4,16.0345232579892" />
                   <mssgle:LineSegment
-                    End="-12.0000029802318,12.6999993258714" />
+                    End="61.654766117001,16.0345232579892" />
                   <mssgle:CubicBezierSegment
-                    Point1="-12.0000029802318,12.6999993258714"
-                    Point2="-16.0000029802318,12.6999993258714"
-                    Point3="-16.0000029802318,16.6999993258714" />
+                    Point1="61.654766117001,16.0345232579892"
+                    Point2="65.654766117001,16.0345232579892"
+                    Point3="65.654766117001,20.0345232579892" />
                   <mssgle:LineSegment
-                    End="-16.0000029802318,17.8999986517429" />
+                    End="65.654766117001,24.5690465159783" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>

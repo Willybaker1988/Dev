@@ -14,6 +14,10 @@ TRUNCATE TABLE [Datawarehouse].[DimProductType]
 print '...Truncated table [Datawarehouse].[DimProductType]'
 TRUNCATE TABLE [Datawarehouse].[DimProduct]
 print '...Truncated table [Datawarehouse].[DimProduct]'
+TRUNCATE TABLE [NHS].[Datawarehouse].[DimHealthAuthority]
+print '...Truncated table [Datawarehouse].[DimHealthAuthority]'
+TRUNCATE TABLE [NHS].[Datawarehouse].[DimPrimaryCareTrust]
+print '...Truncated table [Datawarehouse].[DimPrimaryCareTrust]'
 TRUNCATE TABLE [Stage].[ChemicalSubstance]
 print '...Truncated table [Stage].[ChemicalSubstance]'
 TRUNCATE TABLE [Stage].[GPAddress]
