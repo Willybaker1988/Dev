@@ -232,7 +232,7 @@ CREATE TABLE [Datawarehouse].[DimProductType](
 ) ON [PRIMARY]
 GO
 
-PRINT '...Created[Datawarehouse].[DimProductType]...'
+PRINT '...Created [Datawarehouse].[DimProductType]...'
 
 GO
 
@@ -249,7 +249,40 @@ CREATE TABLE [Datawarehouse].[DimProduct](
 ) ON [PRIMARY]
 GO
 
-PRINT '...Created[Datawarehouse].[DimProduct]...'
+PRINT '...Created [Datawarehouse].[DimProduct]...'
+
+GO
+
+CREATE TABLE [Datawarehouse].[DimHealthAuthority]
+(
+	[DimHealthAuthroritySkey] INT IDENTITY(1,1),
+	[HealthAuthorityId]	varchar(3),
+	[HealthAuthorityName] varchar(150) NULL,
+	[DateActiveFrom] DATETIME
+
+)
+
+GO
+
+PRINT '...Created [Datawarehouse].[DimHealthAuthority]...'
+
+
+GO
+
+CREATE TABLE [Datawarehouse].[DimPrimaryCareTrust]
+(
+	[DimPrimaryCareTrustSkey]	INT IDENTITY(1,1),
+	[PrimaryTrustId]			varchar(3),
+	[PrimaryCareTrustName]		varchar(150) NULL,
+	[DateActiveFrom]			DATETIME,
+	[DimHealthAuthroritySkey]	INT
+
+)
+GO
+
+PRINT '...Created [Datawarehouse].[DimPrimaryCareTrust]...'
+
+PRINT '...Created all [Datawarehouse] Tables..'
 
 PRINT '...Creating Functions'
 
