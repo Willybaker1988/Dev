@@ -147,6 +147,18 @@ GO
 
 PRINT '...Created [Transform].[DimGeneralPracticeAddress]...'
 
+GO
+
+CREATE TABLE [Transform].[LookupPCTToGeneralPractice](
+	[GPId] [varchar](6) NULL,
+	[PrimaryTrustId] [varchar](3) NULL
+) ON [PRIMARY]
+GO
+
+
+PRINT '...Created [Transform].[LookupPCTToGeneralPractice]...'
+
+
 PRINT '...Creating Mirror Tables...'
 
 GO
