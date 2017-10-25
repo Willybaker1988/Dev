@@ -4,6 +4,8 @@ use NHS
 
 TRUNCATE TABLE [Transform].[DimGeneralPracticeAddress]
 print '...Truncated table [Transform].[DimGeneralPracticeAddress]'
+TRUNCATE TABLE [Transform].[LookupPCTToGeneralPractice]
+print '...Truncated table [Transform].[LookupPCTToGeneralPractice]'
 TRUNCATE TABLE [Mirror].[DimGeneralPracticeAddress]
 print '...Truncated table [Mirror].[DimGeneralPracticeAddress]'
 TRUNCATE TABLE [Mirror].[DimProduct]
