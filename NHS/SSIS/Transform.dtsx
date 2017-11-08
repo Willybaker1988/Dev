@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="Transform"
   DTS:PackageType="5"
-  DTS:VersionBuild="23"
-  DTS:VersionGUID="{9164E575-8258-4654-B2D8-6D9786581025}">
+  DTS:VersionBuild="24"
+  DTS:VersionGUID="{B25BB985-D80D-4E0E-923D-A9AB2DC2CF90}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -72,12 +72,12 @@
           DTS:LocaleID="-1"
           DTS:ObjectName="LookupPCTToGeneralPractice"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="2">
+          DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="--Checking for practices which have fallen under multiple PCTs and if there is only returning the latest record for that practice&#xA;--This is to enforce a 1-to-M relationship between [Datawarehouse].[DimPrimaryCareTrust] and [Datawarehouse].[DimGeneralPracticeAddress]&#xA;&#xA;INSERT INTO [Transform].[LookupPCTToGeneralPractice]&#xA;&#xA;SELECT distinct&#xA;&#x9;[Practice]&#x9;=&#x9;pr.[Practice] ,&#xA;&#x9;[Pct]&#x9;&#x9;=&#x9;COALESCE(f.[PCT],pr.[PCT])&#xA;FROM &#xA;&#x9;[NHS].[Stage].[Prescription] pr&#xA;LEFT JOIN&#xA;&#x9;(&#xA;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;pr.[Practice] ,&#xA;&#x9;&#x9;&#x9;[PCT]&#xA;&#x9;&#x9;FROM &#xA;&#x9;&#x9;&#x9;[NHS].[Stage].[Prescription] pr&#xA;&#x9;&#x9;INNER JOIN &#xA;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;P.Practice,&#xA;&#x9;&#x9;&#x9;&#x9;[EarliestFileLogId]&#x9;=&#x9;MIN(FileLogId)&#xA;&#x9;&#x9;&#x9;FROM [NHS].[Stage].[Prescription] p&#xA;&#x9;&#x9;&#x9;INNER JOIN&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[Practice],&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[PCTs]&#x9;&#x9;=&#x9;count( distinct PCT)&#xA;&#x9;&#x9;&#x9;&#x9;FROM [NHS].[Stage].[Prescription] &#xA;&#x9;&#x9;&#x9;&#x9;group by&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;Practice&#xA;&#x9;&#x9;&#x9;&#x9;having &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;count( distinct PCT) &gt; 1&#xA;&#x9;&#x9;&#x9;&#x9;) f ON P.PRACTICE = F.PRACTICE&#xA;&#x9;&#x9;&#x9;GROUP BY&#xA;&#x9;&#x9;&#x9;&#x9; P.PRACTICE&#xA;&#x9;&#x9;)d &#xA;&#x9;&#x9;on pr.PRACTICE = d.PRACTICE and pr.FileLogId  = d.[EarliestFileLogId]&#xA;&#x9;)f&#xA;&#x9;on pr.PRACTICE = f.PRACTICE " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="--Checking for practices which have fallen under multiple PCTs and if there is only returning the latest record for that practice&#xA;--This is to enforce a 1-to-M relationship between [Datawarehouse].[DimPrimaryCareTrust] and [Datawarehouse].[DimGeneralPracticeAddress]&#xA;--Then only insert new records WHERE NOT EXIST in current [LookupPCTToGeneralPractice]&#xA;&#xA;INSERT INTO [Transform].[LookupPCTToGeneralPractice]&#xA;&#xA;SELECT&#xA;&#x9; GPId, &#xA;&#x9; PrimaryTrustId &#xA;FROM &#xA;&#x9;[Transform].[LookupPCTToGeneralPractice]&#xA;WHERE&#xA;&#x9; NOT EXISTS &#xA;(&#xA;&#x9;&#x9;SELECT distinct&#xA;&#x9;&#x9;&#x9;[Practice]&#x9;=&#x9;pr.[Practice] ,&#xA;&#x9;&#x9;&#x9;[Pct]&#x9;&#x9;=&#x9;COALESCE(f.[PCT],pr.[PCT])&#xA;&#x9;&#x9;FROM &#xA;&#x9;&#x9;&#x9;[NHS].[Stage].[Prescription] pr&#xA;&#x9;&#x9;LEFT JOIN&#xA;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;pr.[Practice] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[PCT]&#xA;&#x9;&#x9;&#x9;&#x9;FROM &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[NHS].[Stage].[Prescription] pr&#xA;&#x9;&#x9;&#x9;&#x9;INNER JOIN &#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;P.Practice,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;[EarliestFileLogId]&#x9;=&#x9;MIN(FileLogId)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM [NHS].[Stage].[Prescription] p&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;INNER JOIN&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;[Practice],&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;[PCTs]&#x9;&#x9;=&#x9;count( distinct PCT)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;FROM [NHS].[Stage].[Prescription] &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;group by&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Practice&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;having &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;count( distinct PCT) &gt; 1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;) f ON P.PRACTICE = F.PRACTICE&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;GROUP BY&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; P.PRACTICE&#xA;&#x9;&#x9;&#x9;&#x9;)d &#xA;&#x9;&#x9;&#x9;&#x9;on pr.PRACTICE = d.PRACTICE and pr.FileLogId  = d.[EarliestFileLogId]&#xA;&#x9;&#x9;&#x9;)f&#xA;&#x9;&#x9;&#x9;on pr.PRACTICE = f.PRACTICE&#xA;)" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -89,7 +89,7 @@
           DTS:LocaleID="-1"
           DTS:ObjectName="Mirror DimGeneralPracticeAddress"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="0">
+          DTS:ThreadHint="1">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -106,7 +106,7 @@
           DTS:LocaleID="-1"
           DTS:ObjectName="Mirror DimProduct"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="1">
+          DTS:ThreadHint="2">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -160,7 +160,7 @@
           DTS:LocaleID="-1"
           DTS:ObjectName="Transform DimGeneralPracticeAddress"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-          DTS:ThreadHint="0">
+          DTS:ThreadHint="1">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -297,6 +297,10 @@
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
+          Size="218,42"
+          Id="Package\Dimensions\LookupPCTToGeneralPractice"
+          TopLeft="45.04166620411,165.23332985421" />
+        <NodeLayout
           Size="240.666666666667,42"
           Id="Package\Dimensions\Mirror DimGeneralPracticeAddress"
           TopLeft="39.011903803086,92.0142824476959" />
@@ -308,10 +312,6 @@
           Size="262,42"
           Id="Package\Dimensions\Transform DimGeneralPracticeAddress"
           TopLeft="29.392856098889,22.1714254808425" />
-        <NodeLayout
-          Size="218,42"
-          Id="Package\Dimensions\LookupPCTToGeneralPractice"
-          TopLeft="45.04166620411,165.23332985421" />
         <EdgeLayout
           Id="Package\Dimensions.PrecedenceConstraints[Constraint]"
           TopLeft="159.869046617654,64.1714254808425">
