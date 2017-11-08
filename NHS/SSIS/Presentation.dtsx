@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="Presentation"
   DTS:PackageType="5"
-  DTS:VersionBuild="49"
-  DTS:VersionGUID="{747666DC-A1B2-4AF8-8EBF-F9914E9C94D7}">
+  DTS:VersionBuild="50"
+  DTS:VersionGUID="{1A85C165-FF2F-4525-BB57-DDF2EAFD4661}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
