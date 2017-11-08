@@ -1,0 +1,8 @@
+PCTtoCCG list.
+
+Need to understand the data set, does it change over time?
+
+what arew the columns representive of?
+
+
+https://data.gov.uk/dataset/clinical-commissioning-groups-april-2017-names-and-codes-in-england-version-31
