@@ -1,0 +1,66 @@
+02/06/2017:
+
+Created a folder named BadData for files created 201606, GPADDR file has bad data in the Postcode attribute column. 
+Further development needs to be made to the solution to deal with this scenario.
+
+Logging needs to be in seconds
+
+--DimGeneralPracticeAddress 
+
+
+Created a Dim table for the DimGeneralPracticeAddress AS [Development].[DimGeneralPracticeAddress]
+
+Need a table for Transform/Mirror and Datawarehouse.
+
+Staging Dataset for ADDR persists "Blank" values rather than NULL values. Could update BLANKS to NULLS but would increase LOG space.
+	-** Created script "ADDR UPDATE BLANKS TO NULLS"
+	
+
+12/06/2017:	
+Created:
+
+[Transform].[uspToTransformDimGeneralPracticeAddress]
+	-Pulls the latest data from [Stage].[GPAddress] to [Transform].[DimGeneralPracticeAddress]
+
+
+saved files in : C:\Users\william.baker\Documents\NHS\Development
+
+21/07/2017:
+
+Removed SLCD attributes in the [Mirror].[DimGeneralPracticeAddress]: 
+IsActive
+DateActiveFrom
+DateActiveTo
+
+Created table [Datawarehouse].[DimGeneralPracticeAddress], this dimension will be a type 2, 
+if a GP's (GPid) Postcode chnages then the intial record "IsActive" attricbute set to "0" and DateActiveTo updated with the processing date
+A new record will be created for the new Gp and location, the "IsActive" record will be set to "1" and DateActiveFrom updated with the processing date
+aand DateActiveTo updated with standard future date.
+
+26/07/2017:
+
+NHS Prescription data load package needs ZIP task to archive files. Use link below to add in the task.
+
+https://www.codeproject.com/Articles/545548/CompressplusDynamicplusFilesplusUsingplus-Zipplus
+
+**Still outstanding and needs implementing
+
+27/07/2017:
+
+Changes made to UspTransformDimGeneralPracticeAddress:
+Added NOT IN clause to exclude FileLoadLog records being reprocessed into Transform table.
+
+UspMirrorDimGeneralPracticeAddress
+Added 2 new attributes DateCreated and DateModified to hold the history of record before SLCD at Datawarehouse.
+
+Identified records which have changed correctly from Transform to Mirror.
+
+Need to address UspPresentationDimGeneralPracticeAddress proc as at present the proc only updates the current record rather than persisting 2.
+
+20/09/2017:
+
+Completed and addressed issue with SLCD Type 2 for UspPresentationDimGeneralPracticeAddress.
+
+
+
+

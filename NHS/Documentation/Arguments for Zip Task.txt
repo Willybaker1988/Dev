@@ -1,0 +1,17 @@
+
+
+"a -t 7z\""+ @[User::Var_WorkingDirectory] +""+@[User::PrescriptionFile]  + ".zip\" \""+ @[User::Var_ZippedPrescriptionFile] +"\""
+
+
+Arguments: a -t7z "C:\Files\Single.ZIP" "C:\Files\Single.CSV"
+
+a -t 7z"C:\Users\william.baker\Documents\NHS\Archived\T201611PDPI+BNFT.CSV.ZIP
+
+a -t7z "C:\Users\william.baker\Documents\NHS\Archived\T201607PDPI+BNFT.CSV.ZIP" "C:\Users\william.baker\Documents\NHS\Archived\T201607PDPI+BNFT.CSV"
+a -t7z "C:\Users\william.baker\Documents\NHS\Archived\T201611PDPI+BNFT.CSV.ZIP" "C:\Users\william.baker\Documents\NHS\Archived\T201611PDPI+BNFT.CSV"
+
+"a -t7z\""+ @[User::Var_WorkingDirectory] + "\\" +@[User::PrescriptionFile] + ".ZIP"" "@[User::Var_WorkingDirectory] + "\\" +@[User::PrescriptionFile]"
+
+"a -t7z \""+ @[User::Var_WorkingDirectory] + "\\" +@[User::PrescriptionFile] + ".ZIP\"" +" \""+ @[User::Var_WorkingDirectory]+ "\\" +@[User::PrescriptionFile]+"\""
+
+"a -t7z \""+ @[User::Var_WorkingDirectory] + "\\" +@[User::PrescriptionFile] + ".ZIP\"" +" \""+ @[User::Var_WorkingDirectory]+ "\\" +@[User::PrescriptionFile]+"\""
