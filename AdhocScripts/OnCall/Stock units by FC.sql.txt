@@ -1,0 +1,17 @@
+select	a11.DimDateSKey  Day_Key,
+	max(a14.CalendarDate)  CalendarDate,
+	a12.ExternalWarehouseId  FulfilmentCentreCode,
+	max(a12.WarehouseReference)  FulfilmentCentreDesc,
+	max(a12.ExternalWarehouseId)  FulfilmentCentreCode0,
+	sum(a11.Units)  SALEABLESTOCKUNITS
+from	datawarehouse.vwFactFCInventoryDailySnapshot	a11
+	join	datawarehouse.vwDimFulfilmentCentreLocation	a12
+	  on 	(a11.DimFulfilmentCentreLocationSKey = a12.DimFulfilmentCentreLocationSKey)
+	join	datawarehouse.vwDimFCStockStatusItem	a13
+	  on 	(a11.DimFCStockStatusItemSkey = a13.DimFCStockStatusItemSkey)
+	join	datawarehouse.vwDimDate	a14
+	  on 	(a11.DimDateSKey = a14.DimDateSKey)
+where	(a13.FCStockIndicatorId <> 0
+ and a14.CalendarDate between '2017-09-19' and '2017-09-25')
+group by	a11.DimDateSKey,
+	a12.ExternalWarehouseId
