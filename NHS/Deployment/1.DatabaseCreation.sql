@@ -286,6 +286,7 @@ CREATE TABLE [Datawarehouse].[DimPrimaryCareTrust]
 	[DimPrimaryCareTrustSkey]	INT IDENTITY(1,1),
 	[PrimaryTrustId]			varchar(3),
 	[PrimaryCareTrustName]		varchar(150) NULL,
+	[CareType]					varchar(20),
 	[DateActiveFrom]			DATETIME,
 	[DimHealthAuthroritySkey]	INT
 
