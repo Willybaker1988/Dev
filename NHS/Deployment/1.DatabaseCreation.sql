@@ -299,6 +299,27 @@ PRINT '...Created [Datawarehouse].[DimPrimaryCareTrust]...'
 
 GO
 
+CREATE TABLE [NHS].[Datawarehouse].[FactPrescription]
+(
+	   [PrescriptionRecordId]		INT
+	  ,[DimPeriodSKey]				INT			
+	  ,[DimHealthAuthroritySkey]	INT	
+	  ,[DimPrimaryCareTrustSkey]	INT	
+	  ,[DimGeneralPracticeSKey]		INT	
+	  ,[DimProductSkey]				INT	
+	  ,[DimProductTypeSkey]			INT	
+      ,[Items]						INT
+      ,[NIC]						DECIMAL (11,2)
+      ,[ActCost]					DECIMAL (11,2)
+      ,[Qty]						INT
+)
+
+GO
+
+PRINT '...Created [Datawarehouse].[FactPrescription]...'
+
+GO
+
 DECLARE @StartDate DATE = '20000101', @NumberOfYears INT = 30;
 
 -- prevent set or regional settings from interfering with 
@@ -351,9 +372,36 @@ PRINT '...Created [Datawarehouse].[DimDate]...'
 
 PRINT '...Created all [Datawarehouse] Tables..'
 
+GO
+
+GO
+
+CREATE VIEW [Datawarehouse].[vwDimDate]
+AS
+SELECT DISTINCT
+  [DimPeriodSKey]	=	CASE 
+						WHEN LEN([MONTH])<=1 THEN CAST(CAST([YEAR]AS varchar(4)) + '0' + CAST([MONTH] AS VARCHAR(2)) AS INT)
+						ELSE CAST(CAST([YEAR]AS varchar(4)) + CAST([MONTH] AS varchar(2)) AS INT)
+					END
+ ,[PeriodId]	=	CASE 
+						WHEN LEN([MONTH])<=1 THEN CAST(CAST([YEAR]AS varchar(4)) + '0' + CAST([MONTH] AS VARCHAR(2)) AS INT)
+						ELSE CAST(CAST([YEAR]AS varchar(4)) + CAST([MONTH] AS varchar(2)) AS INT)
+					END
+ ,[YEAR]
+ ,[MONTH]
+ ,[FirstOfMonth]
+ ,[MonthName]
+ ,[Quarter]
+FROM [NHS].[Datawarehouse].[DimDate]
+
+GO
+
+PRINT '...Created view [Datawarehouse].[vwDimDate]'
+
 PRINT '...Creating Functions'
 
 GO
+
 
 CREATE FUNCTION [Transform].[udfTemplateDimGeneralPracticeAddress]
 (	
