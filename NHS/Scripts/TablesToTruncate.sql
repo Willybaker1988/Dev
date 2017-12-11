@@ -22,6 +22,8 @@ TRUNCATE TABLE [NHS].[Datawarehouse].[DimHealthAuthority]
 print '...Truncated table [Datawarehouse].[DimHealthAuthority]'
 TRUNCATE TABLE [NHS].[Datawarehouse].[DimPrimaryCareTrust]
 print '...Truncated table [Datawarehouse].[DimPrimaryCareTrust]'
+TRUNCATE TABLE [Datawarehouse].[FactPrescription]
+print '...Truncated table [Datawarehouse].[FactPrescription]'
 TRUNCATE TABLE [Stage].[ChemicalSubstance]
 print '...Truncated table [Stage].[ChemicalSubstance]'
 TRUNCATE TABLE [Stage].[GPAddress]
