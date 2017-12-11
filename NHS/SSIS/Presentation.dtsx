@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="Presentation"
   DTS:PackageType="5"
-  DTS:VersionBuild="54"
-  DTS:VersionGUID="{D38F0544-E12C-4391-8D50-9F32EED711E5}">
+  DTS:VersionBuild="55"
+  DTS:VersionGUID="{212FAD20-4782-4D17-AC91-81AAC0EC31CB}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -25,7 +25,7 @@
         DTS:Name="ConnectionString">@[$Project::DW_Framework]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
-          DTS:ConnectionString="Data Source=ASGLH-WL-10427\WILLLOCAL;Initial Catalog=DW_Framework;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+          DTS:ConnectionString="Data Source=ASGLH-WL-15343;Initial Catalog=DW_Framework;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
     <DTS:ConnectionManager
@@ -37,7 +37,7 @@
         DTS:Name="ConnectionString">@[$Project::NHS]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
-          DTS:ConnectionString="Data Source=ASGLH-WL-10427\WILLLOCAL;Initial Catalog=NHS;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+          DTS:ConnectionString="Data Source=ASGLH-WL-15343;Initial Catalog=NHS;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
@@ -82,7 +82,7 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse DimGeneralPracticeAddress"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="1">
+              DTS:ThreadHint="0">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
@@ -154,12 +154,12 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse DimHealthAuthority"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="1">
+              DTS:ThreadHint="0">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
                   SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted HealthAuthorities records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimHealthAuthority]  records'&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimHealthAuthority] AS T&#xA; USING &#xA; (&#xA;  SELECT   &#xA;   [SHA]   = UPPER([sha]),&#xA;   [DateCreated] = CAST(GETDATE() AS DATE)&#xA;  FROM [NHS].[Stage].[Prescription]&#xA;  GROUP BY&#xA;   [SHA]   &#xA;  --For future reference will need to add in a lookup file of all the SHA names and join that table here.&#xA; ) AS S&#xA; ON&#xA;  T.[HealthAuthorityId] = S.[SHA]&#xA; WHEN NOT MATCHED THEN INSERT ([HealthAuthorityId], DateActiveFrom)  VALUES (S.[SHA] , S.[DateCreated]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimHealthAuthority]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted HealthAuthorities records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted HealthAuthorities records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimHealthAuthority]  records'&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimHealthAuthority] AS T&#xA; USING &#xA; (&#xA;  SELECT   &#xA;    [SHA]&#x9;&#x9;&#x9;&#x9;&#x9;= UPPER([sha])&#xA;   ,[HealthAuthorityName]&#x9;= ISNULL(D.SHANAME,'UNDEFINED')&#xA;   ,[DateCreated]&#x9;&#x9;&#x9;= CAST(GETDATE() AS DATE)&#xA;  FROM &#xA;&#x9;[NHS].[Stage].[Prescription] F&#xA;  LEFT OUTER JOIN&#xA;&#x9;[Transform].[vwStrategicHealthAuthorityStaticList] D ON F.SHA = D.SHACODE&#xA;  GROUP BY&#xA;   [SHA]&#xA;   ,ISNULL(D.SHANAME,'UNDEFINED')   &#xA;  --For future reference will need to add in a lookup file of all the SHA names and join that table here.&#xA; ) AS S&#xA; ON&#xA;  T.[HealthAuthorityId] = S.[SHA]&#xA; WHEN NOT MATCHED THEN INSERT ([HealthAuthorityId], [DateActiveFrom],[HealthAuthorityName])  VALUES (S.[SHA] , S.[DateCreated], S.[HealthAuthorityName]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimHealthAuthority]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted HealthAuthorities records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="0"
                     SQLTask:DtsVariableName="System::PackageName"
@@ -208,7 +208,7 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse DimPrimaryCareTrust"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="1">
+              DTS:ThreadHint="0">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
@@ -292,7 +292,7 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse Dim Product"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="0">
+              DTS:ThreadHint="1">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
@@ -346,7 +346,7 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse DimProductType"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="0">
+              DTS:ThreadHint="1">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
