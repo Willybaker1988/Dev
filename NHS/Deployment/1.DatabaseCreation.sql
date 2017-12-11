@@ -181,18 +181,20 @@ PRINT '...Created [Mirror].[DimGeneralPracticeAddress]...'
 
 GO
 
-CREATE TABLE [Mirror].[FactPrescription](
-	[SHAId] [varchar](3) NULL,
-	[PCTId] [varchar](3) NULL,
+CREATE TABLE [Mirror].[FactPrescription]
+(
+	[PrescriptionRecordId] INT IDENTITY  (1,1)  ,
+	[SHA] [varchar](3) NULL,
+	[PCT] [varchar](3) NULL,
 	[GPId] [varchar](6) NULL,
-	[BNFId] [varchar](15) NULL,
-	[MedicineName] [varchar](40) NULL,
-	[Units] [int] NULL,
+	[BNFCode] [varchar](15) NULL,
+	[ChemicalSubstanceId] [VARCHAR](9) NULL,
+	[Items] [int] NULL,
 	[NIC] [decimal](11, 2) NULL,
 	[ActCost] [decimal](11, 2) NULL,
 	[Qty] [int] NULL,
 	[PeriodId] [int] NULL
-) ON [PRIMARY]
+)
 GO
 
 PRINT '...Created [Mirror].[FactPrescription]...'
