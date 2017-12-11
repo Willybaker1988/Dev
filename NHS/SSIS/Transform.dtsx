@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="Transform"
   DTS:PackageType="5"
-  DTS:VersionBuild="28"
-  DTS:VersionGUID="{8C44B806-FAF6-4519-A0ED-3A8F9EDCD17B}">
+  DTS:VersionBuild="29"
+  DTS:VersionGUID="{70B112B1-78C3-449A-B069-87EE2EBC1E83}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -251,13 +251,13 @@
       <DTS:Variables />
       <DTS:Executables>
         <DTS:Executable
-          DTS:refId="Package\Facts\Mirror FactPrescription"
+          DTS:refId="Package\Facts\Mirror Fact Prescription"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
           DTS:Description="Mirror FactPrescription"
           DTS:DTSID="{e8473715-041a-4590-b8c1-9d55ba4bbd35}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
-          DTS:ObjectName="Mirror FactPrescription"
+          DTS:ObjectName="Mirror Fact Prescription"
           DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
           DTS:ThreadHint="0">
           <DTS:Variables />
@@ -496,8 +496,8 @@
           </EdgeLayout.Labels>
         </EdgeLayout>
         <NodeLayout
-          Size="167.2,41.6"
-          Id="Package\Facts\Mirror FactPrescription"
+          Size="188,41.6"
+          Id="Package\Facts\Mirror Fact Prescription"
           TopLeft="308.571432804575,79.3725492913005" />
         <ContainerLayout
           HeaderHeight="43"
