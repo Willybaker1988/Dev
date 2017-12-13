@@ -7,12 +7,12 @@
   DTS:CreatorName="ASSEENONSCREEN\william.baker"
   DTS:DTSID="{A1430C9F-F57C-4234-AEF9-7C69BDDD268C}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="14.0.1000.169"
+  DTS:LastModifiedProductVersion="14.0.3006.16"
   DTS:LocaleID="2057"
   DTS:ObjectName="Presentation"
   DTS:PackageType="5"
-  DTS:VersionBuild="60"
-  DTS:VersionGUID="{7AE0C8AD-90BB-417C-B354-282F99BF5728}">
+  DTS:VersionBuild="62"
+  DTS:VersionGUID="{32A5AEE6-AAA0-4ABC-8864-06D7F65C1A22}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -82,7 +82,7 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse DimGeneralPracticeAddress"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="1">
+              DTS:ThreadHint="0">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
@@ -154,7 +154,7 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse DimHealthAuthority"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="1">
+              DTS:ThreadHint="0">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
@@ -208,7 +208,7 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse DimPrimaryCareTrust"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="1">
+              DTS:ThreadHint="0">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
@@ -292,12 +292,12 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse Dim Product"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="0">
+              DTS:ThreadHint="1">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
                   SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimProduct] records'&#xA;  &#xA;&#xA;MERGE INTO [Datawarehouse].[DimProduct] AS T&#xA;USING (  &#xA; SELECT &#xA;  P.[ProductId]&#xA;    ,P.[BNFCode]&#xA;    ,P.[ProductName]&#xA;    ,P.[BNFName]&#xA;    ,PT.[DimProductTypeSkey]&#xA;    ,PT.[ProductType]&#xA;    ,PT.[ChemicalSubstanceId]&#xA;    ,[DateActiveFrom] = GETDATE()&#xA; FROM [Mirror].[DimProduct] P&#xA; LEFT OUTER JOIN [Datawarehouse].[DimProductType] PT ON PT.[ChemicalSubstanceId] = P.[ChemicalSubstanceId]&#xA;)AS S&#xA;ON &#xA; T.[BNFCode] = S.[BNFCode]&#xA;WHEN NOT MATCHED &#xA; THEN INSERT &#xA; (&#xA;  [ProductId], &#xA;  [BNFCode], &#xA;  [ProductName],&#xA;  [BNFName],&#xA;  [DimProductTypeSkey],&#xA;  [ProductType],&#xA;  [ChemicalSubstanceId],&#xA;  [DateActiveFrom]&#xA; ) &#xA; VALUES &#xA; (&#xA;  S.[ProductId], &#xA;  S.[BNFCode], &#xA;  S.[ProductName],&#xA;  S.[BNFName],&#xA;  S.[DimProductTypeSkey],&#xA;  S.[ProductType],&#xA;  S.[ChemicalSubstanceId],&#xA;  S.[DateActiveFrom]&#xA; )&#xA; ;&#xA;SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProduct]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimProduct] records'&#xA;  &#xA;&#xA;MERGE INTO [Datawarehouse].[DimProduct] AS T&#xA;USING (  &#xA;SELECT &#xA;     [ProductId]&#xA;    ,[BNFCode]&#xA;    ,[ProductName]&#xA;    ,[BNFName]&#xA;    ,[DimProductTypeSkey]&#xA;    ,[ProductType]&#xA;    ,[ChemicalSubstanceId]&#xA;    ,[DateActiveFrom] &#xA;FROM&#xA;(&#xA;&#x9; SELECT&#xA;&#x9;&#x9;--Used to Identify a unique product with 2 names. Within the same batch we may receive a product with a different product desc - so we ned to only take 1.&#xA;&#x9;&#x9;[UniqueProductRow]&#x9;&#x9;&#x9;=&#x9;ROW_NUMBER() OVER (PARTITION BY P.[ProductId] ORDER BY P.[ProductName]) &#xA;&#x9;&#x9;,P.[ProductId]&#xA;&#x9;&#x9;,P.[BNFCode]&#xA;&#x9;&#x9;,P.[ProductName]&#xA;&#x9;&#x9;,P.[BNFName]&#xA;&#x9;&#x9;,PT.[DimProductTypeSkey]&#xA;&#x9;&#x9;,PT.[ProductType]&#xA;&#x9;&#x9;,PT.[ChemicalSubstanceId]&#xA;&#x9;&#x9;,[DateActiveFrom] = GETDATE()&#xA;&#x9; FROM [Mirror].[DimProduct] P&#xA;&#x9; LEFT OUTER JOIN [Datawarehouse].[DimProductType] PT ON PT.[ChemicalSubstanceId] = P.[ChemicalSubstanceId]&#xA;&#x9;)&#xA;D&#xA;WHERE D.UniqueProductRow = 1&#xA;)AS S&#xA;ON &#xA; T.[BNFCode] = S.[BNFCode]&#xA;WHEN NOT MATCHED &#xA; THEN INSERT &#xA; (&#xA;  [ProductId], &#xA;  [BNFCode], &#xA;  [ProductName],&#xA;  [BNFName],&#xA;  [DimProductTypeSkey],&#xA;  [ProductType],&#xA;  [ChemicalSubstanceId],&#xA;  [DateActiveFrom]&#xA; ) &#xA; VALUES &#xA; (&#xA;  S.[ProductId], &#xA;  S.[BNFCode], &#xA;  S.[ProductName],&#xA;  S.[BNFName],&#xA;  S.[DimProductTypeSkey],&#xA;  S.[ProductType],&#xA;  S.[ChemicalSubstanceId],&#xA;  S.[DateActiveFrom]&#xA; )&#xA; ;&#xA;SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProduct]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="0"
                     SQLTask:DtsVariableName="System::PackageName"
@@ -346,12 +346,12 @@
               DTS:LocaleID="-1"
               DTS:ObjectName="Datawarehouse DimProductType"
               DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-              DTS:ThreadHint="0">
+              DTS:ThreadHint="1">
               <DTS:Variables />
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
                   SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimProductType] records'&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimProductType] AS T&#xA; USING &#xA; (&#xA;  SELECT DISTINCT&#xA;    [CHEMSUBID] = UPPER([CHEMSUBID])&#xA;   ,[CHEMSUBNAME] = UPPER([CHEMSUBNAME]) &#xA;   ,[DateCreated] = GETDATE()&#xA;  FROM [NHS].[Stage].[ChemicalSubstance]&#xA;&#xA; ) AS S&#xA; ON&#xA;  T.ChemicalSubstanceId = S.CHEMSUBID&#xA; WHEN NOT MATCHED THEN INSERT (ChemicalSubstanceId, ProductType, DateActiveFrom)  VALUES (S.[CHEMSUBID], S.[CHEMSUBNAME], S.[DateCreated]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProductType]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimProductType] records'&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimProductType] AS T&#xA; USING &#xA; (&#xA; SELECT &#xA;&#x9;  [CHEMSUBID]&#x9; &#xA;&#x9; ,[CHEMSUBNAME]&#xA;&#x9; ,[DateCreated]&#xA; FROM&#xA; (&#xA;&#x9;  SELECT &#xA;&#x9;  --Used to Identify a unique product with 2 names. Within the same batch we may receive a product with a different product desc - so we ned to only take 1.&#xA;&#x9;&#x9;[UniqueProductTypeRow]&#x9;&#x9;&#x9;=&#x9;ROW_NUMBER() OVER (PARTITION BY [CHEMSUBID] ORDER BY [CHEMSUBNAME]) &#xA;&#x9;   ,[CHEMSUBID]&#x9;  = UPPER([CHEMSUBID])&#xA;&#x9;   ,[CHEMSUBNAME] = UPPER([CHEMSUBNAME]) &#xA;&#x9;   ,[DateCreated] = GETDATE()&#xA;&#x9;  FROM [NHS].[Stage].[ChemicalSubstance] &#xA;  )&#xA;  D&#xA;  WHERE D.[UniqueProductTypeRow] = 1&#xA;&#xA; ) AS S&#xA; ON&#xA;  T.ChemicalSubstanceId = S.CHEMSUBID&#xA; WHEN NOT MATCHED THEN INSERT (ChemicalSubstanceId, ProductType, DateActiveFrom)  VALUES (S.[CHEMSUBID], S.[CHEMSUBNAME], S.[DateCreated]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProductType]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="0"
                     SQLTask:DtsVariableName="System::PackageName"
@@ -571,15 +571,15 @@
       <GraphLayout
         Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="286.4,41.6"
+          Size="286.666666666667,41.3333333333334"
           Id="Package\Dimensions\Location\Datawarehouse DimGeneralPracticeAddress"
           TopLeft="23.3333338797092,179.285710776704" />
         <NodeLayout
-          Size="248.8,41.6"
+          Size="248.666666666667,41.3333333333334"
           Id="Package\Dimensions\Location\Datawarehouse DimHealthAuthority"
           TopLeft="36.928570736732,17.7500007554889" />
         <NodeLayout
-          Size="263.2,58.4"
+          Size="263.333333333334,58.6666666666667"
           Id="Package\Dimensions\Location\Datawarehouse DimPrimaryCareTrust"
           TopLeft="36.3333326503636,94.8914566988718" />
         <EdgeLayout
@@ -630,22 +630,22 @@
           Text="Need to change DimGenrealPracticeAddress SP and table to incluide the DimPrimaryTrustSkey - For now can use the LookupPCTToGeneralPractice as a link to DimPCT and DimGPA&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;"
           ParentId="Package\Dimensions\Location"
           FontInfo="{assembly:Null}"
-          Size="334.4,215.2"
+          Size="334.666666666667,215.333333333334"
           Id="68105c53-aec2-4fa5-b95a-4ff2793b92a7"
           TopLeft="12.2499954365193,281.83332430621" />
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
           PanelSize="512,552"
-          Size="512,595.2"
+          Size="512,595.333333333334"
           Id="Package\Dimensions\Location"
           TopLeft="24.7896812166132,17.1071404412392" />
         <NodeLayout
-          Size="215.2,41.6"
+          Size="215.333333333334,41.3333333333334"
           Id="Package\Dimensions\Product\Datawarehouse Dim Product"
           TopLeft="45.833333196739,107.373807803066" />
         <NodeLayout
-          Size="235.2,41.6"
+          Size="235.333333333334,41.3333333333334"
           Id="Package\Dimensions\Product\Datawarehouse DimProductType"
           TopLeft="38.1250003259629,17.7500007554889" />
         <EdgeLayout
@@ -673,25 +673,36 @@
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="341.6,336"
-          Size="341.6,378.4"
+          PanelSize="341.333333333334,336"
+          Size="341.333333333334,378.666666666667"
           Id="Package\Dimensions\Product"
           TopLeft="601.624990081414,45.3555529623563" />
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="1018.4,667.2"
-          Size="1018.4,710.4"
+          PanelSize="1018.66666666667,667.333333333334"
+          Size="1018.66666666667,710.666666666667"
           Id="Package\Dimensions"
           TopLeft="601.537690343157,780.201585390634" />
         <NodeLayout
-          Size="174.4,41.6"
+          Size="174.666666666667,41.3333333333334"
           Id="Package\ETL End - Complete"
           TopLeft="1019.99999135124,1773.07543506741" />
         <NodeLayout
-          Size="198.4,41.6"
+          Size="198.666666666667,41.3333333333334"
           Id="Package\ETL Start - Start Logging"
           TopLeft="853.382923791539,527.576988846437" />
+        <NodeLayout
+          Size="232.666666666667,41.3333333333334"
+          Id="Package\Facts\Datawarehouse Fact Prescription"
+          TopLeft="379.047624480968,39.6078428512624" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="988,153.333333333334"
+          Size="988,196"
+          Id="Package\Facts"
+          TopLeft="626.666677338737,1548.07843531924" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
           TopLeft="952.582923791539,569.176988846437">
@@ -726,17 +737,6 @@
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="232.8,41.6"
-          Id="Package\Facts\Datawarehouse Fact Prescription"
-          TopLeft="379.047624480968,39.6078428512624" />
-        <ContainerLayout
-          HeaderHeight="43"
-          IsExpanded="True"
-          PanelSize="988,152.8"
-          Size="988,196"
-          Id="Package\Facts"
-          TopLeft="626.666677338737,1548.07843531924" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
           TopLeft="1110.73769034316,1490.60158539063">
