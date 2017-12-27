@@ -7,12 +7,12 @@
   DTS:CreatorName="ASSEENONSCREEN\william.baker"
   DTS:DTSID="{EA1E01B4-DC50-47BB-969F-96631C848809}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LastModifiedProductVersion="14.0.3006.16"
   DTS:LocaleID="2057"
   DTS:ObjectName="PrescriptionDataLoad"
   DTS:PackageType="5"
-  DTS:VersionBuild="198"
-  DTS:VersionGUID="{85197AE5-6FA1-4871-BC16-CA4CB8EE2CE9}">
+  DTS:VersionBuild="199"
+  DTS:VersionGUID="{1C94ADEB-2F13-447E-B7A6-EFCB9614AE07}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -83,7 +83,7 @@
         DTS:Name="ConnectionString">@[$Project::DW_Framework]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
-          DTS:ConnectionString="Data Source=ASGLH-WL-10427\WILLLOCAL;Initial Catalog=DW_Framework;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+          DTS:ConnectionString="Data Source=ASGLH-WL-15343;Initial Catalog=DW_Framework;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
     <DTS:ConnectionManager
@@ -188,7 +188,7 @@
         DTS:Name="ConnectionString">@[$Project::NHS]</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
-          DTS:ConnectionString="Data Source=ASGLH-WL-10427\WILLLOCAL;Initial Catalog=NHS;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+          DTS:ConnectionString="Data Source=ASGLH-WL-15343;Initial Catalog=NHS;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
     <DTS:ConnectionManager
@@ -1230,7 +1230,7 @@
                       dataType="System.String"
                       description="The SQL command to be executed."
                       name="SqlCommand"
-                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                     <property
                       dataType="System.Int32"
                       description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -2059,7 +2059,7 @@
                       dataType="System.String"
                       description="The SQL command to be executed."
                       name="SqlCommand"
-                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                     <property
                       dataType="System.Int32"
                       description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -2580,7 +2580,7 @@
                       dataType="System.String"
                       description="The SQL command to be executed."
                       name="SqlCommand"
-                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                     <property
                       dataType="System.Int32"
                       description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -4094,26 +4094,26 @@
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-65.2195748756576,31.9732801992473"
+              EndConnector="-65.2195748756579,31.9732801992502"
               Start="0,0"
-              End="-65.2195748756576,24.4732801992473">
+              End="-65.2195748756579,24.4732801992502">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,11.9866400996236" />
+                    End="0,11.9866400996251" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,11.9866400996236"
-                    Point2="0,15.9866400996236"
-                    Point3="-4,15.9866400996236" />
+                    Point1="0,11.9866400996251"
+                    Point2="0,15.9866400996251"
+                    Point3="-4,15.9866400996251" />
                   <mssgle:LineSegment
-                    End="-61.2195748756576,15.9866400996236" />
+                    End="-61.2195748756579,15.9866400996251" />
                   <mssgle:CubicBezierSegment
-                    Point1="-61.2195748756576,15.9866400996236"
-                    Point2="-65.2195748756576,15.9866400996236"
-                    Point3="-65.2195748756576,19.9866400996236" />
+                    Point1="-61.2195748756579,15.9866400996251"
+                    Point2="-65.2195748756579,15.9866400996251"
+                    Point3="-65.2195748756579,19.9866400996251" />
                   <mssgle:LineSegment
-                    End="-65.2195748756576,24.4732801992473" />
+                    End="-65.2195748756579,24.4732801992502" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -4158,30 +4158,30 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 11]"
-          TopLeft="641.137559415092,2232.06216456738">
+          TopLeft="641.137559415092,2232.06216456739">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="272.445761858649,98.2933901513165"
+              EndConnector="272.44576185865,98.2933901513134"
               Start="0,0"
-              End="272.445761858649,90.7933901513165">
+              End="272.44576185865,90.7933901513134">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,60.9950862236133" />
+                    End="0,60.9950862236112" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,60.9950862236133"
-                    Point2="0,64.9950862236133"
-                    Point3="4,64.9950862236133" />
+                    Point1="0,60.9950862236112"
+                    Point2="0,64.9950862236112"
+                    Point3="4,64.9950862236112" />
                   <mssgle:LineSegment
-                    End="268.445761858649,64.9950862236133" />
+                    End="268.44576185865,64.9950862236112" />
                   <mssgle:CubicBezierSegment
-                    Point1="268.445761858649,64.9950862236133"
-                    Point2="272.445761858649,64.9950862236133"
-                    Point3="272.445761858649,68.9950862236133" />
+                    Point1="268.44576185865,64.9950862236112"
+                    Point2="272.44576185865,64.9950862236112"
+                    Point3="272.44576185865,68.9950862236112" />
                   <mssgle:LineSegment
-                    End="272.445761858649,90.7933901513165" />
+                    End="272.44576185865,90.7933901513134" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -4448,7 +4448,7 @@
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-99.9909497688143,5,67.931171875,16"
+              BoundingBox="-99.9909497688143,5,16,16"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
