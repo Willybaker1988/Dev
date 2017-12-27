@@ -1,6 +1,8 @@
 USE [NHS]
 GO
 
+print 'Creating NHS objects Indexes'
+
 SET ANSI_PADDING ON
 GO
 
