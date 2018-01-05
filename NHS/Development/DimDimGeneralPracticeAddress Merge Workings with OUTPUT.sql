@@ -1,24 +1,33 @@
-/*
- Start logging and cxpature all Inserted DimGeneralPracticeAddress records
-*/ 
+DECLARE @DUPS AS TABLE
+(
+gpid nvarchar(10)
+)
 
-DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE(), @Comment nvarchar(250) = 'Checking for new [Datawarehouse].[DimGeneralPracticeAddress]  records'
+INSERT INTO @DUPS 
 
-EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] 
-   @PackageName     = ?
-  ,@UserName		= ?  
-  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated
-  ,@Type			= ?   
-  ,@Status			= 'Started'
-  ,@Comment      = @Comment
+SELECT GPId
+FROM
+(
+	SELECT 
+		[GPId], 
+		MIN([IsActive]) AS [0],
+		MAX([IsActive]) AS [1]
+	FROM
+	(
+
+		SELECT 
+			   [GPId]
+			  ,[IsActive]  =  case when IsActive = 0 then 0 else 1 end
+		  FROM [NHS].[Datawarehouse].[DimGeneralPracticeAddress]
+	)D
+	GROUP BY 
+		[GPId]
+)
+D
+WHERE
+D.[1] = 0 and GPId =  'A83019'
 
 
-/*
-Check for a Day0Load by checking if there are any records in the [Datawarehouse].[DimGeneralPracticeAddress] table
-*/
-
-DECLARE @Day0Check INT = (SELECT ISNULL(D.Day0Check,0) FROM(SELECT Day0Check =  count (*) FROM [NHS].[Datawarehouse].[DimGeneralPracticeAddress])D)
-DECLARE @LoadComment NVARCHAR(250)
 DECLARE @DimGeneralPracticeAddress AS TABLE (
 	[GPId] [varchar](6)  COLLATE SQL_Latin1_General_CP1_CI_AS,
 	[GeneralPracticePrimarySurgeryName] [varchar](50) NULL,
@@ -31,82 +40,43 @@ DECLARE @DimGeneralPracticeAddress AS TABLE (
 ) 
 
 
-IF(@Day0Check = 0) 
-	BEGIN
-		SET @LoadComment = 'Day 0 load'
-		INSERT INTO @DimGeneralPracticeAddress
-
-		/*
-		Day0 load logic for multiple files to preserve history of GP locations.
-
-		The current logic will only process the most recent GP record from the latest FileLoadLog, 
-		so if we have mutiple files at a day 0 we want to make sure these records are all processed in batches else we may miss the records
-
-		The logic below identfies Gpids which have more than one postcode associated to them ib the Transform phase,
-		we then pull these records back to ensure we process earliest to latest in the [datawarehouse].[DimGeneralPracticeAddress]
-		ensuring we preserve history
-		*/
+INSERT INTO @DimGeneralPracticeAddress
 
 
-		SELECT
-			[GPId] = T.[GPId],
-			[GeneralPracticePrimarySurgeryName] = T.GeneralPracticePrimarySurgeryName,
-			[GeneralPracticeSecondarySurgeryName]= T.GeneralPracticeSecondarySurgeryName,
-			[AddressLine1] = T.AddressLine1,
-			[AddressLine2] = T.AddressLine2,
-			[AddressLine3] = T.AddressLine3,
-			[PostCode]	   = T.PostCode,
-			[FileLogId]    = T.FileLogId
-		FROM
-			[NHS].[Transform].[DimGeneralPracticeAddress] t
-		INNER JOIN
-		(
-				SELECT 
-					 GPId,
-					 COUNT(DISTINCT PostCode) as Dups
-				FROM  [NHS].[Transform].[DimGeneralPracticeAddress] 
-				GROUP BY  GPId
-				HAVING COUNT(DISTINCT PostCode) > 1
-		)d
-		on d.GPId = t.GPId
-		UNION ALL
-		SELECT
-			[GPId] ,
-			[GeneralPracticePrimarySurgeryName] ,
-			[GeneralPracticeSecondarySurgeryName],
-			[AddressLine1] ,
-			[AddressLine2] ,
-			[AddressLine3] ,
-			[PostCode] ,
-			[FileLogId]
-		FROM NHS.Mirror.DimGeneralPracticeAddress 
-
-	END
-  IF(@Day0Check <> 0) 
-	BEGIN
-		/*
-		if the load is not a day 0 then load then pull the latest record from the Mirror table.
-		*/
-		 SET @LoadComment =  'Loading'
-
-		 INSERT INTO @DimGeneralPracticeAddress
-
-		 SELECT
-			[GPId] ,
-			[GeneralPracticePrimarySurgeryName] ,
-			[GeneralPracticeSecondarySurgeryName],
-			[AddressLine1] ,
-			[AddressLine2] ,
-			[AddressLine3] ,
-			[PostCode] ,
-			[FileLogId]
-		FROM NHS.Mirror.DimGeneralPracticeAddress 
-	
-	END
-
-/*
-Create Batches to process into the [NHS].[Datawarehouse].[DimGeneralPracticeAddress]
-*/
+SELECT
+	[GPId] = T.[GPId],
+	[GeneralPracticePrimarySurgeryName] = T.GeneralPracticePrimarySurgeryName,
+	[GeneralPracticeSecondarySurgeryName]= T.GeneralPracticeSecondarySurgeryName,
+	[AddressLine1] = T.AddressLine1,
+	[AddressLine2] = T.AddressLine2,
+	[AddressLine3] = T.AddressLine3,
+	[PostCode]	   = T.PostCode,
+	[FileLogId]    = T.FileLogId
+FROM
+	[NHS].[Transform].[DimGeneralPracticeAddress] t
+INNER JOIN
+(
+	SELECT 
+		 GPId,
+		 COUNT(DISTINCT PostCode) as Dups
+	FROM  [NHS].[Transform].[DimGeneralPracticeAddress] 
+	WHERE GPId IN (SELECT GPID FROM @DUPS)
+	GROUP BY  GPId
+	HAVING COUNT(DISTINCT PostCode) > 1
+)d
+on d.GPId = t.GPId
+UNION ALL
+SELECT
+	M.[GPId] ,
+	[GeneralPracticePrimarySurgeryName] ,
+	[GeneralPracticeSecondarySurgeryName],
+	[AddressLine1] ,
+	[AddressLine2] ,
+	[AddressLine3] ,
+	[PostCode] ,
+	[FileLogId]
+FROM NHS.Mirror.DimGeneralPracticeAddress M
+INNER JOIN @DUPS D ON M.GPId = D.gpid
 
 DECLARE @Batches AS TABLE
 (
@@ -128,28 +98,32 @@ DECLARE @IsActive BIT = 1
 DECLARE @Batch INT = 1
 DECLARE @TotalBatches INT = (SELECT MAX([BatchId]) from @Batches)
 DECLARE @FileLoadLogId INT
+DECLARE @InsertCount INT = NULL
+DECLARE @ActivityLogDateTimeCreated DATETIME = GETDATE()
+DECLARE @LoadComment NVARCHAR(250) = 'Day 0 load'
+DECLARE @Comment NVARCHAR(250)
+
 
 
 WHILE @Batch <= @TotalBatches
 BEGIN
 	SET @Comment = @LoadComment + ', processing Batch ' + CAST(@Batch as nvarchar(100))+ ' of ' + CAST(@TotalBatches as nvarchar(100))+ '.'
-	SET @
 
 	PRINT @comment
 
 	EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] 
-	   @PackageName     = ?
-	  ,@UserName		= ?
+	   @PackageName     = 'test'
+	  ,@UserName		= 'test'
 	  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated
-	  ,@Type			= ?
-	  ,@Status			= 'InProgress'
-	  ,@Comment			=  @Comment
+	  ,@Type			= 'test'
+	  ,@Status			= 'Start'
+	  ,@Comment			=  'test'
 	  --''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimGeneralPracticeAddress]'''+
 
 
 	SET @FileLoadLogId = (SELECT [FileLogId] from @Batches where @Batch = BatchId)
 		BEGIN TRANSACTION;
-			MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT
+			MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddressDevelopment] AS TGT
 				USING 
 				(SELECT DISTINCT 
 					[GPId] ,
@@ -200,8 +174,10 @@ BEGIN
 					)
 				 THEN UPDATE SET
 					  tgt.[IsActive]		 = 0
-					 ,tgt.[DateActiveTo]	= @DateActiveFrom;
+					 ,tgt.[DateActiveTo]	= @DateActiveFrom
+					 output $action, inserted.*, deleted.*;
 					 SET @InsertCount		= @@ROWCOUNT;
+		
    
 			DECLARE @InsertComment NVARCHAR(250)   = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimGeneralPracticeAddress] for Batch ' + CAST(@Batch as nvarchar(10))+'.'
 			SET @ActivityLogDateTimeCreated		   = GETDATE()
@@ -211,15 +187,15 @@ BEGIN
 					*/
 
 					 EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] 
-					   @PackageName  = ?
-					  ,@UserName	 = ?   
+					   @PackageName  = 'test'
+					  ,@UserName	 = 'test'
 					  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated
-					  ,@Type		 = ?
-					  ,@Status       = 'InProgress'
-					  ,@Comment      = @InsertComment
+					  ,@Type		 = 'test'
+					  ,@Status       = 'InProgress Insert New Records'
+					  ,@Comment      = 'test'
 
 
-			MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT
+			MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddressDevelopment] AS TGT
 			USING (
 					SELECT DISTINCT 
 					[GPId] ,
@@ -269,7 +245,8 @@ BEGIN
 				)
 			 THEN UPDATE SET
 				  tgt.[IsActive]   = 0
-				 ,tgt.[DateActiveTo]  = @DateActiveFrom;
+				 ,tgt.[DateActiveTo]  = @DateActiveFrom
+				 output $action, inserted.*, deleted.*;
 				 SET @InsertCount = @@ROWCOUNT;
 			
 			
@@ -282,12 +259,12 @@ BEGIN
 
  
 				 EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] 
-					   @PackageName   = ?
-					  ,@UserName	  = ?
+					   @PackageName  = 'test'
+					  ,@UserName	 = 'test'
 					  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated
-					  ,@Type		 =  ?
-					  ,@Status       = 'InProgress'
-					  ,@Comment      = @InsertComment
+					  ,@Type		 = 'test'
+					  ,@Status       = 'InProgress Update InactiveRecords'
+					  ,@Comment      = 'test'
 
 		COMMIT TRANSACTION;
 	SET @Batch = @Batch + 1
@@ -299,9 +276,9 @@ END
 */ 
 
 EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] 
-	   @PackageName  = ?
-	  ,@UserName	 = ?  
+	   @PackageName  = 'test'
+	  ,@UserName	 = 'test'  
 	  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated
-	  ,@Type		 = ?
+	  ,@Type		 = 'test'
 	  ,@Status       = 'Succeeded'
 	  ,@Comment      = 'Finished populating'
