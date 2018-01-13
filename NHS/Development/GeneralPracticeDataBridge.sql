@@ -80,7 +80,20 @@ E ON
 AND
 	FL.FileLogId = E.FileLogId
 
-INSERT INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress]
+INSERT INTO [NHS].[Datawarehouse].[FactPrescription]
+(
+	   [PrescriptionRecordId]		
+	  ,[DimPeriodSKey]				
+	  ,[DimHealthAuthroritySkey]	
+	  ,[DimPrimaryCareTrustSkey]	
+	  ,[DimGeneralPracticeSKey]		
+	  ,[DimProductSkey]				
+	  ,[DimProductTypeSkey]			
+      ,[Items]						
+      ,[NIC]						
+      ,[ActCost]					
+      ,[Qty]						
+)
 
 SELECT DISTINCT 
 	   [PrescriptionRecordId]
