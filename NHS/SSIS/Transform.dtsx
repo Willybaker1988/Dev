@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="Transform"
   DTS:PackageType="5"
-  DTS:VersionBuild="32"
-  DTS:VersionGUID="{D86FF357-5EEA-4883-B309-D33D4069FA0B}">
+  DTS:VersionBuild="37"
+  DTS:VersionGUID="{BEE717EE-71F8-4F2F-886D-EA3191A2F234}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -77,7 +77,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="--Checking for practices which have fallen under multiple PCTs and if there is only returning the latest record for that practice&#xA;--This is to enforce a 1-to-M relationship between [Datawarehouse].[DimPrimaryCareTrust] and [Datawarehouse].[DimGeneralPracticeAddress]&#xA;--Then only insert new records WHERE NOT EXIST in current [LookupPCTToGeneralPractice]&#xA;&#xA;&#xA;IF EXISTS &#xA;&#x9;(select * from tempdb.SYS.objects where name like '%temp%' )&#xA;DROP TABLE #temp&#xA;CREATE TABLE  #temp &#xA;(&#xA;&#x9;PrimaryTrustId VARCHAR (6),&#xA;&#x9;GPID VARCHAR (3)&#xA;)&#xA;&#xA;INSERT INTO #temp&#xA;&#xA;SELECT distinct&#xA;&#x9;[Practice]&#x9;=&#x9;pr.[Practice] ,&#xA;&#x9;[Pct]&#x9;&#x9;=&#x9;COALESCE(f.[PCT],pr.[PCT])&#xA;FROM &#xA;&#x9;[NHS].[Stage].[Prescription] pr&#xA;LEFT JOIN&#xA;&#x9;(&#xA;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;pr.[Practice] ,&#xA;&#x9;&#x9;&#x9;[PCT]&#xA;&#x9;&#x9;FROM &#xA;&#x9;&#x9;&#x9;[NHS].[Stage].[Prescription] pr&#xA;&#x9;&#x9;INNER JOIN &#xA;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;P.Practice,&#xA;&#x9;&#x9;&#x9;&#x9;[EarliestFileLogId]&#x9;=&#x9;MIN(FileLogId)&#xA;&#x9;&#x9;&#x9;FROM [NHS].[Stage].[Prescription] p&#xA;&#x9;&#x9;&#x9;INNER JOIN&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[Practice],&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[PCTs]&#x9;&#x9;=&#x9;count( distinct PCT)&#xA;&#x9;&#x9;&#x9;&#x9;FROM [NHS].[Stage].[Prescription] &#xA;&#x9;&#x9;&#x9;&#x9;group by&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;Practice&#xA;&#x9;&#x9;&#x9;&#x9;having &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;count( distinct PCT) &gt; 1&#xA;&#x9;&#x9;&#x9;&#x9;) f ON P.PRACTICE = F.PRACTICE&#xA;&#x9;&#x9;&#x9;GROUP BY&#xA;&#x9;&#x9;&#x9;&#x9; P.PRACTICE&#xA;&#x9;&#x9;)d &#xA;&#x9;&#x9;on pr.PRACTICE = d.PRACTICE and pr.FileLogId  = d.[EarliestFileLogId]&#xA;&#x9;)f&#xA;&#x9;on pr.PRACTICE = f.PRACTICE&#xA;&#xA;INSERT INTO [Transform].[LookupPCTToGeneralPractice]&#xA;&#xA;select &#xA;&#x9; PrimaryTrustId&#xA;&#x9;,GPID&#xA;from #temp&#xA;where &#xA;&#x9;&#x9; NOT EXISTS &#xA;&#x9;&#x9; (&#xA;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9; PrimaryTrustId&#xA;&#x9;&#x9;&#x9;&#x9;,GPID&#xA;&#x9;&#x9;&#x9;FROM &#xA;&#x9;&#x9;&#x9;&#x9;[Transform].[LookupPCTToGeneralPractice]&#xA;&#x9;&#x9; )&#xA;&#xA;&#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC [Transform].[uspLookupPCTToGeneralPractice] " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -94,7 +94,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="DECLARE @DateCreated datetime = GETDATE()&#xA;DECLARE @DateModified datetime = @DateCreated&#xA;&#xA;MERGE INTO [NHS].[Mirror].[DimGeneralPracticeAddress] AS TGT&#xA;USING &#xA;(&#xA;&#x9;--Loads the latest and unique list of GeneralPracticeAddress using the latestFileLogId&#xA;&#x9;SELECT&#xA;&#x9;&#x9; GPId&#xA;&#x9;&#x9;,GeneralPracticePrimarySurgeryName&#xA;&#x9;&#x9;,GeneralPracticeSecondarySurgeryName&#xA;&#x9;&#x9;,AddressLine1&#xA;&#x9;&#x9;,AddressLine2&#xA;&#x9;&#x9;,AddressLine3&#xA;&#x9;&#x9;,PostCode&#xA;&#x9;&#x9;,FileLogId&#xA;&#x9;&#x9;,DateCreated&#xA;&#x9;&#x9;,DateModified&#xA;&#x9;FROM &#xA;&#x9;(&#xA;&#x9;&#x9;SELECT DISTINCT&#xA;&#x9;&#x9;&#x9; GPId&#xA;&#x9;&#x9;&#x9;,GeneralPracticePrimarySurgeryName&#xA;&#x9;&#x9;&#x9;,GeneralPracticeSecondarySurgeryName&#xA;&#x9;&#x9;&#x9;,AddressLine1&#xA;&#x9;&#x9;&#x9;,AddressLine2&#xA;&#x9;&#x9;&#x9;,AddressLine3&#xA;&#x9;&#x9;&#x9;,PostCode&#xA;&#x9;&#x9;&#x9;,FileLogId&#xA;&#x9;&#x9;&#x9;,[ROW]&#x9;&#x9;&#x9;=&#x9;ROW_NUMBER() OVER (PARTITION BY GPID ORDER BY FILELOGID DESC)&#xA;&#x9;&#x9;&#x9;,[DateCreated]&#x9;=&#x9;@DateCreated&#xA;&#x9;&#x9;&#x9;,[DateModified]&#x9;=&#x9;@DateModified&#xA;&#x9;&#x9;FROM  [NHS].[Transform].[DimGeneralPracticeAddress] &#xA;&#x9;)&#xA;&#x9;D&#xA;&#x9;WHERE D.ROW = 1&#xA;) AS SRC &#xA;ON TGT.[GPId] = SRC.[GPId]&#xA;--WHEN NOT MATCHED THEN NEW GPS FOUND IN TRANSFORM, THEREFORE INSERT NEW RECORDS INTO THE MIRROR TABLE.&#xA;WHEN NOT MATCHED THEN &#xA;INSERT&#xA;(&#xA;     [GPId]&#xA;    ,[GeneralPracticePrimarySurgeryName]&#xA;    ,[GeneralPracticeSecondarySurgeryName]&#xA;    ,[AddressLine1]&#xA;    ,[AddressLine2]&#xA;    ,[AddressLine3]&#xA;    ,[PostCode]&#xA;&#x9;,[FileLogId]&#xA;&#x9;,[DateCreated]&#xA;&#x9;,[DateModified]&#xA;)&#xA;VALUES&#xA;(&#xA;     SRC.[GPId]&#xA;    ,SRC.[GeneralPracticePrimarySurgeryName]&#xA;    ,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;    ,SRC.[AddressLine1]&#xA;    ,SRC.[AddressLine2]&#xA;    ,SRC.[AddressLine3]&#xA;    ,SRC.[PostCode]&#xA;&#x9;,SRC.[FileLogId]&#xA;&#x9;,SRC.[DateCreated]&#xA;&#x9;,SRC.[DateModified]&#xA;)&#xA;--WHEN A RECORD HAS BEEN MODIFIED IN TRANSFORM THEN UPDATE RECORD IN THE MIRROR TABLE.&#xA;WHEN MATCHED&#xA;&#x9;&#x9;&#x9;AND (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;tgt.[GeneralPracticePrimarySurgeryName] &lt;&gt; src.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[GeneralPracticeSecondarySurgeryName] &lt;&gt; src.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[AddressLine1] &lt;&gt; src.[AddressLine1]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[AddressLine2] &lt;&gt; src.[AddressLine2]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[AddressLine3] &lt;&gt; src.[AddressLine3]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;OR&#x9;tgt.[PostCode] &lt;&gt; src.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;--Removed Reference to [FileLogId], Not needed as records which persit in earlier files will always trigger an update.&#xA;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;THEN UPDATE SET&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;tgt.[GeneralPracticePrimarySurgeryName] = src.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[GeneralPracticeSecondarySurgeryName] = src.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[AddressLine1] = src.[AddressLine1]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[AddressLine2] = src.[AddressLine2]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[AddressLine3] = src.[AddressLine3]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[PostCode] = src.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,  &#x9;tgt.[FileLogId] = src.[FileLogId] --Only Update the Mirror table records if an existing record has changed location details. FileLogId will identify these records&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,&#x9;tgt.[DateModified] = src.[DateModified] --Update the record in the mirror&#xA;OUTPUT&#xA;&#x9; SRC.[GPId]&#xA;&#x9;,SRC.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;,SRC.[AddressLine1]&#xA;&#x9;,SRC.[AddressLine2]&#xA;&#x9;,SRC.[AddressLine3]&#xA;&#x9;,SRC.[PostCode]&#xA;&#x9;,SRC.[FileLogId]&#xA;&#x9;,SRC.[DateCreated]&#xA;&#x9;,SRC.[DateModified]&#xA;&#x9;,$Action AS [MergeAction];&#xA;&#x9;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC [Mirror].[uspDimGeneralPracticeAddress] " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
@@ -111,7 +111,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="&#xA;/*&#xA;&#x9;Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@UserName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#x9;&#x9;&#x9;&#x9;&#xA;  ,@ActivityLogDateTimeCreated&#x9;&#x9;=&#x9;@ActivityLogDateTimeCreated&#xA;  ,@Type&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@Status&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;'Started'&#xA;  ,@Comment&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;'Checking for new [Mirror].[DimProduct] records'&#xA;&#xA;INSERT INTO [Mirror].[DimProduct] &#xA;(&#xA;&#x9;[ProductId]&#xA;   ,[BNFCode]&#xA;   ,[ProductName]&#xA;   ,[BNFName]&#xA;   ,[ChemicalSubstanceId]&#xA;)&#xA;&#xA;SELECT DISTINCT&#xA;&#x9; [ProductId]&#x9;&#x9;&#x9;=&#x9;&#x9;UPPER([BNFCODE])&#xA;&#x9;,[BNFCode]&#x9;&#x9;&#x9;&#x9;=&#x9;&#x9;UPPER([BNFCODE])&#xA;&#x9;,[ProductName]&#x9;&#x9;&#x9;=&#x9;&#x9;UPPER([BNFNAME])&#xA;&#x9;,[ProductName]&#x9;&#x9;&#x9;=&#x9;&#x9;UPPER([BNFNAME])&#xA;&#x9;,[ChemicalSubstanceId]&#x9;=&#x9;&#x9;UPPER([CHEMSUBId])&#xA;FROM [Stage].[Prescription] F&#xA;LEFT OUTER JOIN&#xA;&#x9; [NHS].[Stage].[ChemicalSubstance] D ON D.CHEMSUBId = CASE&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN   LEN([BNFCODE]) = 11 THEN LEFT([BNFCODE], 4) &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN   LEN([BNFCODE]) = 15 THEN LEFT([BNFCODE], 9)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE [BNFCODE] END&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;F.PERIOD = D.PERIOD&#xA;WHERE&#xA;&#x9;BNFCODE NOT IN (SELECT BNFCODE FROM [Mirror].[DimProduct])&#xA;SET @InsertCount&#x9;&#x9;&#x9;&#x9;=&#x9;@@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)&#x9;&#x9;=&#x9;''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Mirror].[DimProduct]'&#xA;SET @ActivityLogDateTimeCreated&#x9;&#x9;=&#x9;GETDATE()&#xA;/*&#xA;&#x9;Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@UserName&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#x9;&#x9;&#x9;&#x9;&#xA;  ,@ActivityLogDateTimeCreated&#x9;&#x9;=&#x9;@ActivityLogDateTimeCreated&#xA;  ,@Type&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;?&#xA;  ,@Status&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;'Succeeded'&#xA;  ,@Comment&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;@Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              SQLTask:SqlStatementSource="EXEC [Mirror].[uspDimProduct] &#xA;   @PackageName = ?&#xA;  ,@UserName = ?&#xA;  ,@Type = ?&#xA;&#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="0"
                 SQLTask:DtsVariableName="System::PackageName"
@@ -126,24 +126,6 @@
                 SQLTask:ParameterSize="-1" />
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="2"
-                SQLTask:DtsVariableName="User::Phase"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="3"
-                SQLTask:DtsVariableName="System::PackageName"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="4"
-                SQLTask:DtsVariableName="System::UserName"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="5"
                 SQLTask:DtsVariableName="User::Phase"
                 SQLTask:ParameterDirection="Input"
                 SQLTask:DataType="129"
@@ -165,7 +147,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="/*&#xA;&#x9;Convert BLANKS in attributes to NULLs for Transformation from Staging to Datwarehouse&#xA;*/&#xA;&#xA;DECLARE @Updatecounter INT&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET Address1 = NULL&#xA;WHERE Address1 = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS Address1&#xA;&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET Address2 = NULL&#xA;WHERE Address2 = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS Address2&#xA;&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET Address3 = NULL&#xA;WHERE Address3 = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS Address3&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET name = NULL&#xA;WHERE name = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS name&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET gpsurgeryname = NULL&#xA;WHERE gpsurgeryname = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS gpsurgeryname&#xA;&#xA;UPDATE [NHS].[Stage].[GPAddress]&#xA;SET postcode = NULL&#xA;WHERE postcode = '                         '&#xA;&#xA;SET @Updatecounter = @@ROWCOUNT&#xA;SELECT @Updatecounter AS postcode&#xA;&#xA;&#xA;insert into [Transform].[DimGeneralPracticeAddress]&#xA;(&#xA;&#x9;&#x9; [GPId]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;,[GeneralPracticePrimarySurgeryName]&#x9;&#xA;&#x9;&#x9;,[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;,[AddressLine1]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;,[AddressLine2]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;,[AddressLine3]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;,[PostCode]&#x9;&#x9;&#xA;&#x9;&#x9;,FileLogId&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;)&#xA;SELECT &#xA;&#x9;   COALESCE(GP.[GPId]&#x9;&#x9;&#x9;,   T.[GPId]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[GPSurgeryName]  , T.[GeneralPracticePrimarySurgeryName]&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[Name]&#x9;&#x9;&#x9;,   T.[GeneralPracticeSecondarySurgeryName]&#x9;     )&#xA;      ,COALESCE(GP.[Address1]&#x9;&#x9;,   T.[AddressLine1]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[Address2]&#x9;&#x9;,   T.[AddressLine2]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[Address3]&#x9;&#x9;,   T.[AddressLine3]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,COALESCE(GP.[PostCode]&#x9;&#x9;,   T.[PostCode]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; )&#xA;      ,[FileLogId]&#xA;&#xA;  FROM&#xA;&#x9; [NHS].[Stage].[GPAddress] GP&#xA;  cross join&#xA;&#x9; [Transform].[udfTemplateDimGeneralPracticeAddress]() T&#xA;  --Will only pull through new staged records into the Tranform table&#xA;  WHERE &#xA;&#x9; [FileLogId] NOT IN (SELECT DISTINCT [FileLogId] FROM  [NHS].[Transform].[DimGeneralPracticeAddress])" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC [Transform].[uspDimGeneralPracticeAddress] &#xA;&#xA;&#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
@@ -264,7 +246,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted HealthAuthorities records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment      = 'Inserting new records into [Mirror].[FactPrescription] '&#xA;&#xA;INSERT INTO [Mirror].[FactPrescription] &#xA;(&#xA;&#x9;&#x9; SHA&#xA;&#x9;&#x9;,PCT&#xA;&#x9;&#x9;,GPId&#xA;&#x9;&#x9;,BNFCode&#xA;&#x9;&#x9;,ChemicalSubstanceId&#xA;&#x9;&#x9;,Items&#xA;&#x9;&#x9;,NIC&#xA;&#x9;&#x9;,ActCost&#xA;&#x9;&#x9;,Qty&#xA;&#x9;&#x9;,PeriodId&#xA;)&#xA;&#xA;SELECT DISTINCT  &#xA;&#x9;   [SHA]&#xA;&#x9;  ,[PCT]&#xA;&#x9;  ,[GPId]&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;A.GPId&#xA;&#x9;  ,[BNFCODE]&#x9;&#x9;&#x9;&#x9;=&#x9;f.[BNFCODE]&#xA;&#x9;  ,[ChemicalSubstanceId]&#x9;=&#x9;c.ChemicalSubstanceId&#xA;&#x9;  ,[ITEMS]&#xA;&#x9;  ,[NIC]&#xA;&#x9;  ,[ACTCOST]&#xA;&#x9;  ,[QUANTITY]&#xA;&#x9;  ,[PERIOD]&#xA;  FROM &#xA;&#x9;[NHS].[Stage].[Prescription] F&#xA;  INNER JOIN  &#xA;&#x9;[NHS].[Mirror].[DimProduct] C ON c.BNFCode = f.BNFCODE &#xA;  INNER JOIN &#xA;&#x9;[NHS].[Mirror].[DimGeneralPracticeAddress] A ON A.GPId = F.PRACTICE &#xA;  WHERE&#xA;&#x9;[PERIOD] NOT IN (SELECT DISTINCT PeriodId FROM  [NHS].[Mirror].[FactPrescription]) &#xA;&#x9;--Needs to be changed to a MTVF as this will execute row by row and will take forever&#xA;&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Mirror].[FactPrescription]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted HealthAuthorities records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment&#xA;&#x9;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              SQLTask:SqlStatementSource="EXEC  [Mirror].[uspFactPrescription] &#xA;   @PackageName = ?&#xA;  ,@UserName = ?&#xA;  ,@Type = ?&#xA;&#xA;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="0"
                 SQLTask:DtsVariableName="System::PackageName"
@@ -411,47 +393,47 @@
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="787.333333333334,278.666666666667"
-          Size="787.333333333334,321.333333333334"
+          PanelSize="720,224.666666666667"
+          Size="720,268"
           Id="Package\Dimensions"
-          TopLeft="18.3134913243048,107.109059050481" />
+          TopLeft="132.665341472181,127.572021647538" />
         <NodeLayout
           Size="174.666666666667,41.3333333333334"
           Id="Package\ETL End - Complete"
-          TopLeft="289.172620704551,732.175484703793" />
+          TopLeft="394.959656165238,732.175484703793" />
         <NodeLayout
           Size="198.666666666667,41.3333333333334"
           Id="Package\ETL Start - Start Logging"
-          TopLeft="286.904757629548,35.8476187642415" />
+          TopLeft="392.691793090235,35.8476187642415" />
         <NodeLayout
           Size="188,41.3333333333334"
           Id="Package\Facts\Mirror Fact Prescription"
-          TopLeft="308.571432804575,79.3725492913005" />
+          TopLeft="291.210321952165,18.7058837094381" />
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="792.666666666667,186"
-          Size="792.666666666667,228.666666666667"
+          PanelSize="792.666666666667,115.333333333334"
+          Size="792.666666666667,158"
           Id="Package\Facts"
-          TopLeft="20.952381309198,453.725496559407" />
+          TopLeft="96.8783061037391,525.947717490195" />
         <NodeLayout
           Size="161.333333333334,41.3333333333334"
           Id="Package\Run Presentation"
-          TopLeft="754.107152360054,722.85391641783" />
+          TopLeft="859.894187820741,722.85391641783" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="414.632936316751,428.709059050481">
+          TopLeft="492.938490454627,395.572021647538">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,25.0164375089261"
+              EndConnector="0,130.375695842658"
               Start="0,0"
-              End="0,17.5164375089261">
+              End="0,122.875695842658">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,17.5164375089261" />
+                    End="0,122.875695842658" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -462,30 +444,18 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 1]"
-          TopLeft="386.104757629548,77.4476187642415">
+          TopLeft="492.345233947875,77.1809520975748">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="25.8087336947569,29.6614402862396"
+              EndConnector="0,50.3910695499628"
               Start="0,0"
-              End="25.8087336947569,22.1614402862396">
+              End="0,42.8910695499628">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,10.8307201431198" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,10.8307201431198"
-                    Point2="0,14.8307201431198"
-                    Point3="4,14.8307201431198" />
-                  <mssgle:LineSegment
-                    End="21.8087336947569,14.8307201431198" />
-                  <mssgle:CubicBezierSegment
-                    Point1="21.8087336947569,14.8307201431198"
-                    Point2="25.8087336947569,14.8307201431198"
-                    Point3="25.8087336947569,18.8307201431198" />
-                  <mssgle:LineSegment
-                    End="25.8087336947569,22.1614402862396" />
+                    End="0,42.8910695499628" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -496,7 +466,7 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 2]"
-          TopLeft="463.572620704551,752.975484703793">
+          TopLeft="569.359656165238,752.975484703793">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -530,30 +500,30 @@
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 3]"
-          TopLeft="417.352381309198,682.525496559407">
+          TopLeft="493.211639437072,683.947717490195">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-40.9797606046474,49.6499881443862"
+              EndConnector="-10.9186499385012,48.2277672135978"
               Start="0,0"
-              End="-40.9797606046474,42.1499881443862">
+              End="-10.9186499385012,40.7277672135978">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,20.8249940721931" />
+                    End="0,20.1138836067989" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,20.8249940721931"
-                    Point2="0,24.8249940721931"
-                    Point3="-4,24.8249940721931" />
+                    Point1="0,20.1138836067989"
+                    Point2="0,24.1138836067989"
+                    Point3="-4,24.1138836067989" />
                   <mssgle:LineSegment
-                    End="-36.9797606046474,24.8249940721931" />
+                    End="-6.91864993850118,24.1138836067989" />
                   <mssgle:CubicBezierSegment
-                    Point1="-36.9797606046474,24.8249940721931"
-                    Point2="-40.9797606046474,24.8249940721931"
-                    Point3="-40.9797606046474,28.8249940721931" />
+                    Point1="-6.91864993850118,24.1138836067989"
+                    Point2="-10.9186499385012,24.1138836067989"
+                    Point3="-10.9186499385012,28.1138836067989" />
                   <mssgle:LineSegment
-                    End="-40.9797606046474,42.1499881443862" />
+                    End="-10.9186499385012,40.7277672135978" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>

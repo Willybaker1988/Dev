@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="Presentation"
   DTS:PackageType="5"
-  DTS:VersionBuild="69"
-  DTS:VersionGUID="{C090809B-B9C6-4826-AD5E-921269694666}">
+  DTS:VersionBuild="76"
+  DTS:VersionGUID="{19E4B3B0-FFEF-4BE9-AAF3-1CFB0B8B1B77}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -87,7 +87,7 @@
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
                   SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted DimGeneralPracticeAddress records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE(), @Comment nvarchar(250) = 'Checking for new [Datawarehouse].[DimGeneralPracticeAddress]  records'&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName     = ?&#xA;  ,@UserName&#x9;&#x9;= ?  &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type&#x9;&#x9;&#x9;= ?   &#xA;  ,@Status&#x9;&#x9;&#x9;= 'Started'&#xA;  ,@Comment      = @Comment&#xA;&#xA;&#xA;/*&#xA;Check for a Day0Load by checking if there are any records in the [Datawarehouse].[DimGeneralPracticeAddress] table&#xA;*/&#xA;&#xA;DECLARE @Day0Check INT = (SELECT ISNULL(D.Day0Check,0) FROM(SELECT Day0Check =  count (*) FROM [NHS].[Datawarehouse].[DimGeneralPracticeAddress])D)&#xA;DECLARE @LoadComment NVARCHAR(250)&#xA;DECLARE @DimGeneralPracticeAddress AS TABLE (&#xA;&#x9;[GPId] [varchar](6)  COLLATE SQL_Latin1_General_CP1_CI_AS,&#xA;&#x9;[GeneralPracticePrimarySurgeryName] [varchar](50) NULL,&#xA;&#x9;[GeneralPracticeSecondarySurgeryName] [varchar](50) NULL,&#xA;&#x9;[AddressLine1] [varchar](50) NULL,&#xA;&#x9;[AddressLine2] [varchar](50) NULL,&#xA;&#x9;[AddressLine3] [varchar](50) NULL,&#xA;&#x9;[PostCode] [varchar](10)  COLLATE SQL_Latin1_General_CP1_CI_AS,&#xA;&#x9;[FileLogId] [int] NULL&#xA;) &#xA;&#xA;&#xA;IF(@Day0Check = 0) &#xA;&#x9;BEGIN&#xA;&#x9;&#x9;SET @LoadComment = 'Day 0 load'&#xA;&#x9;&#x9;INSERT INTO @DimGeneralPracticeAddress&#xA;&#xA;&#x9;&#x9;/*&#xA;&#x9;&#x9;Day0 load logic for multiple files to preserve history of GP locations.&#xA;&#xA;&#x9;&#x9;The current logic will only process the most recent GP record from the latest FileLoadLog, &#xA;&#x9;&#x9;so if we have mutiple files at a day 0 we want to make sure these records are all processed in batches else we may miss the records&#xA;&#xA;&#x9;&#x9;The logic below identfies Gpids which have more than one postcode associated to them ib the Transform phase,&#xA;&#x9;&#x9;we then pull these records back to ensure we process earliest to latest in the [datawarehouse].[DimGeneralPracticeAddress]&#xA;&#x9;&#x9;ensuring we preserve history&#xA;&#x9;&#x9;*/&#xA;&#xA;&#xA;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;[GPId],&#xA;&#x9;&#x9;&#x9;[GeneralPracticePrimarySurgeryName] ,&#xA;&#x9;&#x9;&#x9;[GeneralPracticeSecondarySurgeryName],&#xA;&#x9;&#x9;&#x9;[AddressLine1] ,&#xA;&#x9;&#x9;&#x9;[AddressLine2] ,&#xA;&#x9;&#x9;&#x9;[AddressLine3] ,&#xA;&#x9;&#x9;&#x9;[PostCode]&#x9;  ,&#xA;&#x9;&#x9;&#x9;[FileLogId]   &#xA;&#x9;&#x9;FROM&#xA;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;[GPId] = T.[GPId],&#xA;&#x9;&#x9;&#x9;&#x9;[GeneralPracticePrimarySurgeryName] = T.GeneralPracticePrimarySurgeryName,&#xA;&#x9;&#x9;&#x9;&#x9;[GeneralPracticeSecondarySurgeryName]= T.GeneralPracticeSecondarySurgeryName,&#xA;&#x9;&#x9;&#x9;&#x9;[AddressLine1] = T.AddressLine1,&#xA;&#x9;&#x9;&#x9;&#x9;[AddressLine2] = T.AddressLine2,&#xA;&#x9;&#x9;&#x9;&#x9;[AddressLine3] = T.AddressLine3,&#xA;&#x9;&#x9;&#x9;&#x9;[PostCode]&#x9;   = T.PostCode,&#xA;&#x9;&#x9;&#x9;&#x9;[FileLogId]    = T.FileLogId,&#xA;&#x9;&#x9;&#x9;&#x9;[RowBatch]     = ROW_NUMBER() OVER (PARTITION BY t.[GPId], t.[POSTCODE] ORDER BY t.[GPId],t.[FileLogId] desc)&#xA;&#x9;&#x9;&#x9;FROM&#xA;&#x9;&#x9;&#x9;&#x9;[NHS].[Transform].[DimGeneralPracticeAddress] t&#xA;&#x9;&#x9;&#x9;INNER JOIN&#xA;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; GPId,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; COUNT(DISTINCT PostCode) as Dups&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM  [NHS].[Transform].[DimGeneralPracticeAddress] &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;GROUP BY  GPId&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;HAVING COUNT(DISTINCT PostCode) &gt; 1&#xA;&#x9;&#x9;&#x9;)d&#xA;&#x9;&#x9;&#x9;on d.GPId = t.GPId&#xA;&#x9;&#x9;&#x9;UNION ALL&#xA;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;[GPId] ,&#xA;&#x9;&#x9;&#x9;&#x9;[GeneralPracticePrimarySurgeryName] ,&#xA;&#x9;&#x9;&#x9;&#x9;[GeneralPracticeSecondarySurgeryName],&#xA;&#x9;&#x9;&#x9;&#x9;[AddressLine1] ,&#xA;&#x9;&#x9;&#x9;&#x9;[AddressLine2] ,&#xA;&#x9;&#x9;&#x9;&#x9;[AddressLine3] ,&#xA;&#x9;&#x9;&#x9;&#x9;[PostCode] ,&#xA;&#x9;&#x9;&#x9;&#x9;[FileLogId],&#xA;&#x9;&#x9;&#x9;&#x9;[RowBatch] = 1&#xA;&#x9;&#x9;&#x9;FROM NHS.Mirror.DimGeneralPracticeAddress &#xA;&#x9;&#x9;)&#xA;&#x9;&#x9;d&#xA;&#x9;&#x9;WHERE RowBatch = 1&#xA;&#xA;&#x9;END&#xA;  IF(@Day0Check &lt;&gt; 0) &#xA;&#x9;BEGIN&#xA;&#x9;&#x9;/*&#xA;&#x9;&#x9;if the load is not a day 0 then load then pull the latest record from the Mirror table.&#xA;&#x9;&#x9;*/&#xA;&#x9;&#x9; SET @LoadComment =  'Loading'&#xA;&#xA;&#x9;&#x9; INSERT INTO @DimGeneralPracticeAddress&#xA;&#xA;&#x9;&#x9; SELECT&#xA;&#x9;&#x9;&#x9;[GPId] ,&#xA;&#x9;&#x9;&#x9;[GeneralPracticePrimarySurgeryName] ,&#xA;&#x9;&#x9;&#x9;[GeneralPracticeSecondarySurgeryName],&#xA;&#x9;&#x9;&#x9;[AddressLine1] ,&#xA;&#x9;&#x9;&#x9;[AddressLine2] ,&#xA;&#x9;&#x9;&#x9;[AddressLine3] ,&#xA;&#x9;&#x9;&#x9;[PostCode] ,&#xA;&#x9;&#x9;&#x9;[FileLogId]&#xA;&#x9;&#x9;FROM NHS.Mirror.DimGeneralPracticeAddress &#xA;&#x9;&#xA;&#x9;END&#xA;&#xA;/*&#xA;Create Batches to process into the [NHS].[Datawarehouse].[DimGeneralPracticeAddress]&#xA;*/&#xA;&#xA;DECLARE @Batches AS TABLE&#xA;(&#xA;[BatchId]&#x9;INT IDENTITY(1,1),&#xA;[FileLogId]&#x9;INT&#xA;)&#xA;&#xA;INSERT INTO @Batches&#xA;&#xA;SELECT DISTINCT&#xA;&#x9;[FileLogId]&#xA;FROM &#xA;&#x9;@DimGeneralPracticeAddress ORDER BY 1&#xA;&#xA;&#xA;DECLARE @DateActiveFrom datetime = getdate() &#xA;DECLARE @DateActiveTo datetime = CAST('9999-12-31 00:00:00.000' AS DATETIME)&#xA;DECLARE @IsActive BIT = 1&#xA;DECLARE @Batch INT = 1&#xA;DECLARE @TotalBatches INT = (SELECT MAX([BatchId]) from @Batches)&#xA;DECLARE @FileLoadLogId INT&#xA;&#xA;&#xA;WHILE @Batch &lt;= @TotalBatches&#xA;BEGIN&#xA;&#x9;SET @Comment = @LoadComment + ', processing Batch ' + CAST(@Batch as nvarchar(100))+ ' of ' + CAST(@TotalBatches as nvarchar(100))+ '.'&#xA;&#xA;&#x9;PRINT @comment&#xA;&#xA;&#x9;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;&#x9;   @PackageName     = ?&#xA;&#x9;  ,@UserName&#x9;&#x9;= ?&#xA;&#x9;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;&#x9;  ,@Type&#x9;&#x9;&#x9;= ?&#xA;&#x9;  ,@Status&#x9;&#x9;&#x9;= 'InProgress'&#xA;&#x9;  ,@Comment&#x9;&#x9;&#x9;=  @Comment&#xA;&#x9;  --''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimGeneralPracticeAddress]'''+&#xA;&#xA;&#xA;&#x9;SET @FileLoadLogId = (SELECT [FileLogId] from @Batches where @Batch = BatchId)&#xA;&#x9;&#x9;BEGIN TRANSACTION;&#xA;&#x9;&#x9;&#x9;MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT&#xA;&#x9;&#x9;&#x9;&#x9;USING &#xA;&#x9;&#x9;&#x9;&#x9;(SELECT DISTINCT &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[GPId] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[GeneralPracticePrimarySurgeryName] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[GeneralPracticeSecondarySurgeryName],&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[AddressLine1] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[AddressLine2] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[AddressLine3] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[PostCode] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[FileLogId]&#xA;&#x9;&#x9;&#x9;&#x9; FROM &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;@DimGeneralPracticeAddress &#xA;&#x9;&#x9;&#x9;&#x9; WHERE &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;@FileLoadLogId = [FileLogId]&#xA;&#x9;&#x9;&#x9;&#x9;) AS SRC &#xA;&#x9;&#x9;&#x9;&#x9; ON TGT.[GPId] = SRC.[GPId] &#xA;&#x9;&#x9;&#x9;&#x9; AND TGT.[PostCode] = SRC.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;WHEN NOT MATCHED THEN --WHEN NOT MATCHED THEN INSERT NEW GP PRACTICES WITH NEW POSTCODES FOUND IN MIRROR (NEW GP RECORDS).&#xA;&#x9;&#x9;&#x9;&#x9;INSERT&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; [GPId]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,[GeneralPracticePrimarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,[AddressLine1]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,[AddressLine2]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,[AddressLine3]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9; ,[IsActive]&#xA;&#x9;&#x9;&#x9;&#x9; ,[DateActiveFrom]&#xA;&#x9;&#x9;&#x9;&#x9; ,[DateActiveTo]&#xA;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;VALUES&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; SRC.[GPId]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,SRC.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,SRC.[AddressLine1]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,SRC.[AddressLine2]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,SRC.[AddressLine3]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;,SRC.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9; ,@IsActive&#xA;&#x9;&#x9;&#x9;&#x9; ,@DateActiveFrom&#xA;&#x9;&#x9;&#x9;&#x9; ,@DateActiveto&#xA;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;WHEN MATCHED -- FAKE CONDITION (WILL NEVER BE TRUE).&#xA;&#x9;&#x9;&#x9;&#x9;   AND (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; TGT.[PostCode] &lt;&gt; SRC.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9; THEN UPDATE SET&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  tgt.[IsActive]&#x9;&#x9; = 0&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; ,tgt.[DateActiveTo]&#x9;= @DateActiveFrom;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; SET @InsertCount&#x9;&#x9;= @@ROWCOUNT;&#xA;   &#xA;&#x9;&#x9;&#x9;DECLARE @InsertComment NVARCHAR(250)   = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimGeneralPracticeAddress] for Batch ' + CAST(@Batch as nvarchar(10))+'.'&#xA;&#x9;&#x9;&#x9;SET @ActivityLogDateTimeCreated&#x9;&#x9;   = GETDATE()&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;/*&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; Log new records inserted into DimGeneralPracticeAddress.&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;*/&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;   @PackageName  = ?&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@UserName&#x9; = ?   &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@Type&#x9;&#x9; = ?&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@Status       = 'InProgress'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@Comment      = @InsertComment&#xA;&#xA;&#xA;&#x9;&#x9;&#x9;MERGE INTO [NHS].[Datawarehouse].[DimGeneralPracticeAddress] AS TGT&#xA;&#x9;&#x9;&#x9;USING (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT DISTINCT &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[GPId] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[GeneralPracticePrimarySurgeryName] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[GeneralPracticeSecondarySurgeryName],&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[AddressLine1] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[AddressLine2] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[AddressLine3] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[PostCode] ,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;[FileLogId]&#xA;&#x9;&#x9;&#x9;&#x9; FROM &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;@DimGeneralPracticeAddress &#xA;&#x9;&#x9;&#x9;&#x9; WHERE &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;@FileLoadLogId = [FileLogId]&#xA;&#x9;&#x9;&#x9;&#x9;) AS SRC &#xA;&#x9;&#x9;&#x9; ON TGT.[GPId] = SRC.[GPId] &#xA;&#x9;&#x9;&#x9;WHEN NOT MATCHED THEN --WHEN NOT MATCHED THEN INSERT NEW GPS FOUND IN MIRROR (NEW GP RECORDS).&#xA;&#x9;&#x9;&#x9;INSERT&#xA;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9; [GPId]&#xA;&#x9;&#x9;&#x9;&#x9;,[GeneralPracticePrimarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;,[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;,[AddressLine1]&#xA;&#x9;&#x9;&#x9;&#x9;,[AddressLine2]&#xA;&#x9;&#x9;&#x9;&#x9;,[AddressLine3]&#xA;&#x9;&#x9;&#x9;&#x9;,[PostCode]&#xA;&#x9;&#x9;&#x9; ,[IsActive]&#xA;&#x9;&#x9;&#x9; ,[DateActiveFrom]&#xA;&#x9;&#x9;&#x9; ,[DateActiveTo]&#xA;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;VALUES&#xA;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9; SRC.[GPId]&#xA;&#x9;&#x9;&#x9;&#x9;,SRC.[GeneralPracticePrimarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;,SRC.[GeneralPracticeSecondarySurgeryName]&#xA;&#x9;&#x9;&#x9;&#x9;,SRC.[AddressLine1]&#xA;&#x9;&#x9;&#x9;&#x9;,SRC.[AddressLine2]&#xA;&#x9;&#x9;&#x9;&#x9;,SRC.[AddressLine3]&#xA;&#x9;&#x9;&#x9;&#x9;,SRC.[PostCode]&#xA;&#x9;&#x9;&#x9; ,@IsActive&#xA;&#x9;&#x9;&#x9; ,@DateActiveFrom&#xA;&#x9;&#x9;&#x9; ,@DateActiveto&#xA;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;WHEN MATCHED -- FOR TYPE 2 RECORDS, UPDATE SCD RECORDS FOR EXISTING RECORDS IN THE DATAWAREHOUSE TABLE WHERE THE ADDRESS HS CHANGED BY UPDATING [IsActive] AND DateActiveTo.&#xA;&#x9;&#x9;&#x9;   AND (&#xA;&#x9;&#x9;&#x9;&#x9; TGT.[PostCode] &lt;&gt; SRC.[PostCode]&#xA;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9; THEN UPDATE SET&#xA;&#x9;&#x9;&#x9;&#x9;  tgt.[IsActive]   = 0&#xA;&#x9;&#x9;&#x9;&#x9; ,tgt.[DateActiveTo]  = @DateActiveFrom;&#xA;&#x9;&#x9;&#x9;&#x9; SET @InsertCount = @@ROWCOUNT;&#xA;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;&#x9;/*&#xA;&#x9;&#x9;&#x9; Log new records inserted into DimGeneralPracticeAddress.&#xA;&#x9;&#x9;&#x9;*/&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;SET @InsertComment  = ''+CAST(@InsertCount as nvarchar(100))+' records flagged IsActive = 0 for Batch ' + CAST(@Batch as nvarchar(10))+'.'&#xA;&#x9;&#x9;&#x9;&#x9;SET @ActivityLogDateTimeCreated  = GETDATE() &#xA;&#xA; &#xA;&#x9;&#x9;&#x9;&#x9; EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;   @PackageName   = ?&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@UserName&#x9;  = ?&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@Type&#x9;&#x9; =  ?&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@Status       = 'InProgress'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;  ,@Comment      = @InsertComment&#xA;&#xA;&#x9;&#x9;COMMIT TRANSACTION;&#xA;&#x9;SET @Batch = @Batch + 1&#xA;&#x9;print @batch&#xA;END&#xA;&#xA;/*&#xA; Finish logging &#xA;*/ &#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;&#x9;   @PackageName  = ?&#xA;&#x9;  ,@UserName&#x9; = ?  &#xA;&#x9;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;&#x9;  ,@Type&#x9;&#x9; = ?&#xA;&#x9;  ,@Status       = 'Succeeded'&#xA;&#x9;  ,@Comment      = 'Finished populating'" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  SQLTask:SqlStatementSource="EXEC  [Datawarehouse].[uspDimGeneralPracticeAddress] &#xA;   @PackageName =?&#xA;  ,@UserName = ?&#xA;  ,@Type = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="0"
                     SQLTask:DtsVariableName="System::PackageName"
@@ -102,78 +102,6 @@
                     SQLTask:ParameterSize="-1" />
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="2"
-                    SQLTask:DtsVariableName="User::Phase"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="3"
-                    SQLTask:DtsVariableName="System::PackageName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="4"
-                    SQLTask:DtsVariableName="System::UserName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="5"
-                    SQLTask:DtsVariableName="User::Phase"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="6"
-                    SQLTask:DtsVariableName="System::PackageName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="7"
-                    SQLTask:DtsVariableName="System::UserName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="8"
-                    SQLTask:DtsVariableName="User::Phase"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="9"
-                    SQLTask:DtsVariableName="System::PackageName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="10"
-                    SQLTask:DtsVariableName="System::UserName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="11"
-                    SQLTask:DtsVariableName="User::Phase"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="12"
-                    SQLTask:DtsVariableName="System::PackageName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="13"
-                    SQLTask:DtsVariableName="System::UserName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="14"
                     SQLTask:DtsVariableName="User::Phase"
                     SQLTask:ParameterDirection="Input"
                     SQLTask:DataType="129"
@@ -195,7 +123,7 @@
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
                   SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted HealthAuthorities records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimHealthAuthority]  records'&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimHealthAuthority] AS T&#xA; USING &#xA; (&#xA;  SELECT   &#xA;    [SHA]&#x9;&#x9;&#x9;&#x9;&#x9;= UPPER([sha])&#xA;   ,[HealthAuthorityName]&#x9;= ISNULL(D.SHANAME,'UNDEFINED')&#xA;   ,[DateCreated]&#x9;&#x9;&#x9;= CAST(GETDATE() AS DATE)&#xA;  FROM &#xA;&#x9;[NHS].[Stage].[Prescription] F&#xA;  LEFT OUTER JOIN&#xA;&#x9;[Transform].[vwStrategicHealthAuthorityStaticList] D ON F.SHA = D.SHACODE&#xA;  GROUP BY&#xA;   [SHA]&#xA;   ,ISNULL(D.SHANAME,'UNDEFINED')   &#xA;  --For future reference will need to add in a lookup file of all the SHA names and join that table here.&#xA; ) AS S&#xA; ON&#xA;  T.[HealthAuthorityId] = S.[SHA]&#xA; WHEN NOT MATCHED THEN INSERT ([HealthAuthorityId], [DateActiveFrom],[HealthAuthorityName])  VALUES (S.[SHA] , S.[DateCreated], S.[HealthAuthorityName]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimHealthAuthority]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted HealthAuthorities records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  SQLTask:SqlStatementSource="EXEC [Datawarehouse].[uspDimHealthAuthority] &#xA;   @PackageName =?&#xA;  ,@UserName =?&#xA;  ,@Type = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="0"
                     SQLTask:DtsVariableName="System::PackageName"
@@ -210,24 +138,6 @@
                     SQLTask:ParameterSize="-1" />
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="2"
-                    SQLTask:DtsVariableName="User::Phase"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="3"
-                    SQLTask:DtsVariableName="System::PackageName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="4"
-                    SQLTask:DtsVariableName="System::UserName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="5"
                     SQLTask:DtsVariableName="User::Phase"
                     SQLTask:ParameterDirection="Input"
                     SQLTask:DataType="129"
@@ -249,7 +159,7 @@
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
                   SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted HealthAuthorities records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimPrimaryCareTrust]  records'&#xA;&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimPrimaryCareTrust] AS T&#xA; USING &#xA; (&#xA;  SELECT  &#xA;&#x9;    [PCT]&#x9;&#x9;&#x9;&#x9;&#x9;= UPPER([PCT])&#xA;&#x9;   ,[PrimaryCareTrustName]&#x9;= UPPER(COALESCE(CCG.CCGNAME, PCT.ORGANISATION, 'UNDEFINED'))&#xA;&#x9;   ,[CareType]&#x9;&#x9;&#x9;&#x9;= CASE&#x9;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN CCG.CCGNAME IS NOT NULL THEN 'CCG'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;WHEN PCT.ORGANISATION IS NOT NULL THEN 'PCT'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;ELSE 'UNDEFINED'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  END&#xA;&#x9;   ,[DateCreated]&#x9;&#x9;&#x9;= CAST(GETDATE() AS DATE)&#xA;&#x9;   ,[DimHealthAuthroritySkey] &#xA;  FROM &#xA;&#x9;&#x9;[NHS].[Stage].[Prescription] F&#xA;  INNER JOIN&#xA;&#x9;&#x9;[NHS].[Datawarehouse].[DimHealthAuthority] HA ON F.SHA = HA.[HealthAuthorityId]&#xA;  LEFT OUTER JOIN&#xA;&#x9;&#x9;[NHS].[Stage].[ReferenceCCGCodesAndCCGNames] CCG ON F.[PCT] = CCG.[CCGCode]&#xA;  LEFT OUTER JOIN&#xA;&#x9;&#x9;[NHS].[Stage].[ReferenceTrustCodesAndTrustNames] PCT ON F.[PCT] = PCT.Code&#xA;  GROUP BY&#xA;&#x9;&#x9;[PCT], &#xA;&#x9;&#x9;[DimHealthAuthroritySkey],&#xA;&#x9;&#x9;UPPER(COALESCE(CCG.CCGNAME, PCT.ORGANISATION, 'UNDEFINED')),&#xA;&#x9;&#x9;CASE&#x9;&#xA;&#x9;&#x9;&#x9;&#x9;WHEN CCG.CCGNAME IS NOT NULL THEN 'CCG'&#xA;&#x9;&#x9;&#x9;&#x9;WHEN PCT.ORGANISATION IS NOT NULL THEN 'PCT'&#xA;&#x9;&#x9;&#x9;&#x9;ELSE 'UNDEFINED'&#xA;&#x9;&#x9;END&#xA;&#xA; ) AS S&#xA; ON&#xA;  T.[PrimaryTrustId] = S.[PCT]&#xA; WHEN NOT MATCHED THEN INSERT ([PrimaryTrustId],[DimHealthAuthroritySkey], [DateActiveFrom], [PrimaryCareTrustName], [CareType])  VALUES (S.[PCT] ,S.[DimHealthAuthroritySkey], S.[DateCreated], S.[PrimaryCareTrustName], s.[CareType]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimPrimaryCareTrust]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted HealthAuthorities records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  SQLTask:SqlStatementSource="EXEC [Datawarehouse].[uspDimPrimaryCareTrust] &#xA;   @PackageName = ?&#xA;  ,@UserName =?&#xA;  ,@Type = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="0"
                     SQLTask:DtsVariableName="System::PackageName"
@@ -264,24 +174,6 @@
                     SQLTask:ParameterSize="-1" />
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="2"
-                    SQLTask:DtsVariableName="User::Phase"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="3"
-                    SQLTask:DtsVariableName="System::PackageName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="4"
-                    SQLTask:DtsVariableName="System::UserName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="5"
                     SQLTask:DtsVariableName="User::Phase"
                     SQLTask:ParameterDirection="Input"
                     SQLTask:DataType="129"
@@ -333,7 +225,7 @@
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
                   SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimProduct] records'&#xA;  &#xA;&#xA;MERGE INTO [Datawarehouse].[DimProduct] AS T&#xA;USING (  &#xA;SELECT &#xA;     [ProductId]&#xA;    ,[BNFCode]&#xA;    ,[ProductName]&#xA;    ,[BNFName]&#xA;    ,[DimProductTypeSkey]&#xA;    ,[ProductType]&#xA;    ,[ChemicalSubstanceId]&#xA;    ,[DateActiveFrom] &#xA;FROM&#xA;(&#xA;&#x9; SELECT&#xA;&#x9;&#x9;--Used to Identify a unique product with 2 names. Within the same batch we may receive a product with a different product desc - so we ned to only take 1.&#xA;&#x9;&#x9;[UniqueProductRow]&#x9;&#x9;&#x9;=&#x9;ROW_NUMBER() OVER (PARTITION BY P.[ProductId] ORDER BY P.[ProductName]) &#xA;&#x9;&#x9;,P.[ProductId]&#xA;&#x9;&#x9;,P.[BNFCode]&#xA;&#x9;&#x9;,P.[ProductName]&#xA;&#x9;&#x9;,P.[BNFName]&#xA;&#x9;&#x9;,PT.[DimProductTypeSkey]&#xA;&#x9;&#x9;,PT.[ProductType]&#xA;&#x9;&#x9;,PT.[ChemicalSubstanceId]&#xA;&#x9;&#x9;,[DateActiveFrom] = GETDATE()&#xA;&#x9; FROM [Mirror].[DimProduct] P&#xA;&#x9; LEFT OUTER JOIN [Datawarehouse].[DimProductType] PT ON PT.[ChemicalSubstanceId] = P.[ChemicalSubstanceId]&#xA;&#x9;)&#xA;D&#xA;WHERE D.UniqueProductRow = 1&#xA;)AS S&#xA;ON &#xA; T.[BNFCode] = S.[BNFCode]&#xA;WHEN NOT MATCHED &#xA; THEN INSERT &#xA; (&#xA;  [ProductId], &#xA;  [BNFCode], &#xA;  [ProductName],&#xA;  [BNFName],&#xA;  [DimProductTypeSkey],&#xA;  [ProductType],&#xA;  [ChemicalSubstanceId],&#xA;  [DateActiveFrom]&#xA; ) &#xA; VALUES &#xA; (&#xA;  S.[ProductId], &#xA;  S.[BNFCode], &#xA;  S.[ProductName],&#xA;  S.[BNFName],&#xA;  S.[DimProductTypeSkey],&#xA;  S.[ProductType],&#xA;  S.[ChemicalSubstanceId],&#xA;  S.[DateActiveFrom]&#xA; )&#xA; ;&#xA;SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProduct]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  SQLTask:SqlStatementSource="EXEC [Datawarehouse].[uspDimProduct] &#xA;   @PackageName = ?&#xA;  ,@UserName = ?&#xA;  ,@Type = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="0"
                     SQLTask:DtsVariableName="System::PackageName"
@@ -348,24 +240,6 @@
                     SQLTask:ParameterSize="-1" />
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="2"
-                    SQLTask:DtsVariableName="User::Phase"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="3"
-                    SQLTask:DtsVariableName="System::PackageName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="4"
-                    SQLTask:DtsVariableName="System::UserName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="129"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="5"
                     SQLTask:DtsVariableName="User::Phase"
                     SQLTask:ParameterDirection="Input"
                     SQLTask:DataType="129"
@@ -387,7 +261,7 @@
               <DTS:ObjectData>
                 <SQLTask:SqlTaskData
                   SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-                  SQLTask:SqlStatementSource="/*&#xA; Start logging and cxpature all Inserted ProductTypes records&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment       = 'Checking for new [Datawarehouse].[DimProductType] records'&#xA;&#xA; MERGE INTO &#xA;  [NHS].[Datawarehouse].[DimProductType] AS T&#xA; USING &#xA; (&#xA; SELECT &#xA;&#x9;  [CHEMSUBID]&#x9; &#xA;&#x9; ,[CHEMSUBNAME]&#xA;&#x9; ,[DateCreated]&#xA; FROM&#xA; (&#xA;&#x9;  SELECT &#xA;&#x9;  --Used to Identify a unique product with 2 names. Within the same batch we may receive a product with a different product desc - so we ned to only take 1.&#xA;&#x9;&#x9;[UniqueProductTypeRow]&#x9;&#x9;&#x9;=&#x9;ROW_NUMBER() OVER (PARTITION BY [CHEMSUBID] ORDER BY [CHEMSUBNAME]) &#xA;&#x9;   ,[CHEMSUBID]&#x9;  = UPPER([CHEMSUBID])&#xA;&#x9;   ,[CHEMSUBNAME] = UPPER([CHEMSUBNAME]) &#xA;&#x9;   ,[DateCreated] = GETDATE()&#xA;&#x9;  FROM [NHS].[Stage].[ChemicalSubstance] &#xA;  )&#xA;  D&#xA;  WHERE D.[UniqueProductTypeRow] = 1&#xA;&#xA; ) AS S&#xA; ON&#xA;  T.ChemicalSubstanceId = S.CHEMSUBID&#xA; WHEN NOT MATCHED THEN INSERT (ChemicalSubstanceId, ProductType, DateActiveFrom)  VALUES (S.[CHEMSUBID], S.[CHEMSUBNAME], S.[DateCreated]);&#xA; SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[DimProductType]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted ProductTypes records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  SQLTask:SqlStatementSource="EXEC [Datawarehouse].[uspDimProductType] &#xA;   @PackageName = ?&#xA;  ,@UserName = ?&#xA;  ,@Type = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="0"
                     SQLTask:DtsVariableName="System::PackageName"
@@ -402,24 +276,6 @@
                     SQLTask:ParameterSize="-1" />
                   <SQLTask:ParameterBinding
                     SQLTask:ParameterName="2"
-                    SQLTask:DtsVariableName="User::Phase"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="130"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="3"
-                    SQLTask:DtsVariableName="System::PackageName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="130"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="4"
-                    SQLTask:DtsVariableName="System::UserName"
-                    SQLTask:ParameterDirection="Input"
-                    SQLTask:DataType="130"
-                    SQLTask:ParameterSize="-1" />
-                  <SQLTask:ParameterBinding
-                    SQLTask:ParameterName="5"
                     SQLTask:DtsVariableName="User::Phase"
                     SQLTask:ParameterDirection="Input"
                     SQLTask:DataType="130"
@@ -525,7 +381,7 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{93A85CA6-91F5-4B2E-AFC0-1CDAF593D7B8}"
-              SQLTask:SqlStatementSource="/*&#xA; Datawarehouse Fact Prescription&#xA; -Transform the Fact to take all the Skeys from the relevant Dimension tables&#xA;&#xA; Capture all records inserted in trnasformation of FactPrescription&#xA;&#xA;*/ &#xA;&#xA;DECLARE @InsertCount INT = NULL, @ActivityLogDateTimeCreated DATETIME = GETDATE()&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Started'&#xA;  ,@Comment      = 'Inserting new records into [Datawarehouse].[FactPrescription] '&#xA;&#xA;&#xA;USE tempdb;&#xA;IF EXISTS (SELECT name FROM sys.tables wHERE name like '%#tempgps%')&#xA;DROP TABLE #tempgps&#xA;CREATE TABLE #tempgps&#xA;(&#xA;&#x9;GPId&#x9;&#x9;varchar(6)  COLLATE SQL_Latin1_General_CP1_CI_AS, &#xA;&#x9;PeriodId&#x9;INT,   &#xA;&#x9;FileLogId&#x9;INT, &#xA;&#x9;PostCode&#x9;varchar(10)  COLLATE SQL_Latin1_General_CP1_CI_AS&#xA;)&#xA;CREATE NONCLUSTERED&#x9;INDEX IX_tempgps ON #tempgps (GPId, FileLogId);&#xA;&#xA;/*&#xA;&#xA;The below logic is for the type 2 dimension [NHS].[Datawarehouse].[DimGeneralPracticeAddress] so we persist the correct data in the Fact.+&#xA;&#xA;**&#x9;Need to add delta into loads as do not want to reinsert the same data again, could use the FileLogId&#x9;**&#xA;&#xA;*/ &#xA;&#xA;&#xA;INSERT INTO #tempgps&#xA;SELECT DISTINCT &#xA;&#x9;M.GPId, &#xA;&#x9;PeriodId, &#xA;&#x9;FL.FileLogId, &#xA;&#x9;PostCode&#xA;FROm&#xA;&#x9;[NHS].[Mirror].[FactPrescription] M&#xA;INNER JOIN&#xA;&#x9;[DW_Framework].[NHS].[FileLoadLog] FL ON M.PeriodId = FL.Period&#xA;INNER JOIN &#x9;&#xA;&#x9;[DW_Framework].[NHS].[ProcessingFileTypes] T ON t.FileType = FL.FileType&#xA;INNER JOIN &#xA;(&#xA;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;[GPId] = T.[GPId],&#xA;&#x9;&#x9;&#x9;&#x9;[PostCode]&#x9;   = T.PostCode,&#xA;&#x9;&#x9;&#x9;&#x9;[FileLogId]    = T.FileLogId&#xA;&#x9;&#x9;&#x9;FROM&#xA;&#x9;&#x9;&#x9;&#x9;[NHS].[Transform].[DimGeneralPracticeAddress] t&#xA;&#x9;&#x9;&#x9;INNER JOIN&#xA;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; GPId,&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; COUNT(DISTINCT PostCode) as Dups&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM  [NHS].[Transform].[DimGeneralPracticeAddress] &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;GROUP BY  GPId&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;HAVING COUNT(DISTINCT PostCode) &gt; 1&#xA;&#x9;&#x9;&#x9;)d&#xA;&#x9;&#x9;&#x9;on d.GPId = t.GPId&#xA;&#x9;&#x9;&#x9;UNION ALL&#xA;&#x9;&#x9;&#x9;SELECT&#xA;&#x9;&#x9;&#x9;&#x9;[GPId] ,&#xA;&#x9;&#x9;&#x9;&#x9;[PostCode] ,&#xA;&#x9;&#x9;&#x9;&#x9;[FileLogId]&#xA;&#x9;&#x9;&#x9;FROM NHS.Mirror.DimGeneralPracticeAddress &#xA;)&#xA;E ON &#xA;&#x9;M.GPId = E.GPId&#xA;AND&#xA;&#x9;FL.FileLogId = E.FileLogId&#xA;&#xA;INSERT INTO [NHS].[Datawarehouse].[FactPrescription]&#xA;(&#xA;&#x9;   [PrescriptionRecordId]&#x9;&#x9;&#xA;&#x9;  ,[DimPeriodSKey]&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;  ,[DimHealthAuthroritySkey]&#x9;&#xA;&#x9;  ,[DimPrimaryCareTrustSkey]&#x9;&#xA;&#x9;  ,[DimGeneralPracticeSKey]&#x9;&#x9;&#xA;&#x9;  ,[DimProductSkey]&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;  ,[DimProductTypeSkey]&#x9;&#x9;&#x9;&#xA;      ,[Items]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;      ,[NIC]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;      ,[ActCost]&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;      ,[Qty]&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;)&#xA;&#xA;SELECT DISTINCT &#xA;&#x9;   [PrescriptionRecordId]&#xA;&#x9;  ,[DimPeriodSKey]&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;D.[DimPeriodSKey]&#xA;&#x9;  ,[DimHealthAuthroritySkey]&#x9;&#x9;=&#x9;SHA.DimHealthAuthroritySkey&#xA;&#x9;  ,[DimPrimaryCareTrustSkey]&#x9;&#x9;=&#x9;pct.DimPrimaryCareTrustSkey&#xA;&#x9;  ,[DimGeneralPracticeSKey]&#x9;&#x9;&#x9;=&#x9;GP.DimGeneralPracticeSKey&#xA;&#x9;  ,[DimProductSkey]&#x9;&#x9;&#x9;&#x9;&#x9;=&#x9;P.DimProductSkey&#xA;&#x9;  ,[DimProductTypeSkey]&#x9;&#x9;&#x9;&#x9;=&#x9;PT.DimProductTypeSkey&#xA;      ,[Items]&#xA;      ,[NIC]&#xA;      ,[ActCost]&#xA;      ,[Qty]&#xA;FROM&#xA;(&#xA;&#x9;&#x9;select &#xA;&#x9;&#x9;&#x9;[PrescriptionRecordId], &#xA;&#x9;&#x9;&#x9;[SHA] ,&#xA;&#x9;&#x9;&#x9;[PCT] ,&#xA;&#x9;&#x9;&#x9;[GPId]&#x9;=&#x9;F.[GPId],&#xA;&#x9;&#x9;&#x9;[BNFCode] ,&#xA;&#x9;&#x9;&#x9;[ChemicalSubstanceId],&#xA;&#x9;&#x9;&#x9;[Items] ,&#xA;&#x9;&#x9;&#x9;[NIC] ,&#xA;&#x9;&#x9;&#x9;[ActCost] ,&#xA;&#x9;&#x9;&#x9;[Qty] ,&#xA;&#x9;&#x9;&#x9;[PeriodId] = F.[PeriodId],&#xA;&#x9;&#x9;&#x9;B.[PostCode]&#xA;&#x9;&#x9;FROm&#xA;&#x9;&#x9;&#x9;[NHS].[Mirror].[FactPrescription] F&#xA;&#x9;&#x9;INNER JOIN&#xA;&#x9;&#x9;&#x9;#tempgps B ON B.GPId = F.GPId AND B.PeriodId = F.PeriodId&#xA;)&#xA;F&#xA;  LEFT OUTER JOIN&#xA;&#x9;[NHS].[Datawarehouse].[DimProduct] P ON F.[BNFCode] = P.[BNFCode]&#xA;  LEFT OUTER JOIN&#xA;&#x9;[NHS].[Datawarehouse].[DimProductType] PT ON P.[ChemicalSubstanceId] = PT.[ChemicalSubstanceId]&#xA;  LEFT OUTER JOIN &#xA;&#x9;[NHS].[Datawarehouse].[DimGeneralPracticeAddress] GP ON F.[GPId] = GP.[GPId] AND F.[PostCode] = GP.[PostCode]&#xA;  LEFT OUTER JOIN&#xA;&#x9;[NHS].[Transform].[LookupPCTToGeneralPractice] LKP ON GP.[GPId] = LKP.[GPId]&#xA;  LEFT OUTER JOIN &#xA;&#x9;[NHS].[Datawarehouse].[DimPrimaryCareTrust] PCT ON PCT.[PrimaryTrustId] = LKP.[PrimaryTrustId]&#xA;  LEFT OUTER JOIN&#xA;&#x9;[NHS].[Datawarehouse].[DimHealthAuthority] SHA ON SHA.[DimHealthAuthroritySkey] = PCT.[DimHealthAuthroritySkey] --Should be changed to Bkeys rather than Skeys&#xA;  LEFT OUTER JOIN&#xA;&#x9;[NHS].[Datawarehouse].[vwDimDate] D ON F.[PeriodId] = D.[PeriodId]&#xA;&#xA;&#xA;DROP TABLE #tempgps&#xA;&#xA;SET @InsertCount    = @@ROWCOUNT;&#xA;&#xA;DECLARE @Comment NVARCHAR(250)  = ''+CAST(@InsertCount as nvarchar(100))+' records inserted into [Datawarehouse].[FactPrescription]'&#xA;SET @ActivityLogDateTimeCreated  = GETDATE()&#xA;/*&#xA; Finish logging and cxpature all Inserted HealthAuthorities records&#xA;*/&#xA;&#xA;EXECUTE [DW_Framework].[dbo].[UspExecutionLogActivity] &#xA;   @PackageName      = ?&#xA;  ,@UserName      = ?    &#xA;  ,@ActivityLogDateTimeCreated  = @ActivityLogDateTimeCreated&#xA;  ,@Type       = ?&#xA;  ,@Status       = 'Succeeded'&#xA;  ,@Comment       = @Comment&#xA;&#x9;&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              SQLTask:SqlStatementSource="EXEC [Datawarehouse].[uspFactPrescription] &#xA;   @PackageName = ?&#xA;  ,@UserName = ?&#xA;  ,@Type = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="0"
                 SQLTask:DtsVariableName="System::PackageName"
@@ -540,24 +396,6 @@
                 SQLTask:ParameterSize="-1" />
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="2"
-                SQLTask:DtsVariableName="User::Phase"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="3"
-                SQLTask:DtsVariableName="System::PackageName"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="4"
-                SQLTask:DtsVariableName="System::UserName"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="129"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="5"
                 SQLTask:DtsVariableName="User::Phase"
                 SQLTask:ParameterDirection="Input"
                 SQLTask:DataType="129"
@@ -672,7 +510,7 @@
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="512,552.666666666667"
+          PanelSize="512,553.333333333334"
           Size="512,596"
           Id="Package\Dimensions\Location"
           TopLeft="24.7896812166132,17.1071404412392" />
@@ -727,7 +565,7 @@
         <NodeLayout
           Size="198.666666666667,41.3333333333334"
           Id="Package\ETL Start - Start Logging"
-          TopLeft="853.382923791539,527.576988846437" />
+          TopLeft="965.049588794243,577.843654614266" />
         <NodeLayout
           Size="233.333333333334,42.6666666666667"
           Id="Package\Facts\Datawarehouse Fact Prescription"
@@ -735,36 +573,36 @@
         <ContainerLayout
           HeaderHeight="43"
           IsExpanded="True"
-          PanelSize="988,153.333333333334"
+          PanelSize="988,154"
           Size="988,196.666666666667"
           Id="Package\Facts"
           TopLeft="631.666677264231,1526.41176904" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="952.582923791539,569.176988846437">
+          TopLeft="1064.38292212758,619.176987947599">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="158.154766551618,211.024596544197"
+              EndConnector="46.4881015489143,161.024597443035"
               Start="0,0"
-              End="158.154766551618,203.524596544197">
+              End="46.4881015489143,153.524597443035">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,101.512298272098" />
+                    End="0,76.5122987215176" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,101.512298272098"
-                    Point2="0,105.512298272098"
-                    Point3="4,105.512298272098" />
+                    Point1="0,76.5122987215176"
+                    Point2="0,80.5122987215176"
+                    Point3="4,80.5122987215176" />
                   <mssgle:LineSegment
-                    End="154.154766551618,105.512298272098" />
+                    End="42.4881015489143,80.5122987215176" />
                   <mssgle:CubicBezierSegment
-                    Point1="154.154766551618,105.512298272098"
-                    Point2="158.154766551618,105.512298272098"
-                    Point3="158.154766551618,109.512298272098" />
+                    Point1="42.4881015489143,80.5122987215176"
+                    Point2="46.4881015489143,80.5122987215176"
+                    Point3="46.4881015489143,84.5122987215176" />
                   <mssgle:LineSegment
-                    End="158.154766551618,203.524596544197" />
+                    End="46.4881015489143,153.524597443035" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
