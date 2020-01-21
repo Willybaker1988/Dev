@@ -1,0 +1,11 @@
+This repo hold info on how to call the Snowpipe endpoint based off an event.
+
+Document being followed is here:
+
+https://docs.snowflake.net/manuals/user-guide/data-load-snowpipe-rest-load.html
+
+.sql scripts are the role based access permissions that need adding to a user
+.py are for triggering the snowpipe endpoint based off an event
+
+
+Sample python code can be found in sample.py
