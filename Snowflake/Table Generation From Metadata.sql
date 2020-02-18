@@ -58,6 +58,8 @@ SELECT ') AS CreatePipe
               WHEN t.$6 = 'C' THEN 'VARCHAR'
               WHEN t.$6 = 'D' THEN 'DATE'
               WHEN t.$6 = 'N' THEN 'FLOAT'  
+              WHEN t.$6 = 'T' THEN 'TIME'
+              WHEN t.$6 = 'I' THEN 'INT'
          ELSE 'NEEDS MAPPING'
          END AS Snowflake_Mapping
        , CONCAT(t.$3 ,' ',    
@@ -65,6 +67,8 @@ SELECT ') AS CreatePipe
                   WHEN t.$6 = 'C' THEN  CONCAT('VARCHAR', '(',t.$7,')') 
                   WHEN t.$6 = 'D' THEN 'DATE'
                   WHEN t.$6 = 'N' THEN 'DECIMAL(15,2)'  
+                  WHEN t.$6 = 'T' THEN 'TIME'
+                  WHEN t.$6 = 'I' THEN 'INT'
                 ELSE 'NEEDS MAPPING'
                 END)
           AS Column_Metadata
@@ -76,6 +80,8 @@ SELECT ') AS CreatePipe
                       WHEN t.$6 = 'C' THEN  CONCAT('VARCHAR', '(',t.$7,')') 
                       WHEN t.$6 = 'D' THEN  CONCAT('TO_DATE(TO_TIMESTAMP($1:',t.$3,'))') 
                       WHEN t.$6 = 'N' THEN 'DECIMAL(15,2)'  
+                      WHEN t.$6 = 'T' THEN 'TIME'
+                      WHEN t.$6 = 'I' THEN 'INT'
                     ELSE 'NEEDS MAPPING'
                     END, ' AS ', t.$3
                     )
@@ -86,6 +92,8 @@ SELECT ') AS CreatePipe
                       WHEN t.$6 = 'C' THEN  CONCAT('VARCHAR', '(',t.$7,')') 
                       WHEN t.$6 = 'D' THEN  CONCAT('TO_DATE(TO_TIMESTAMP($1:',t.$3,'))') 
                       WHEN t.$6 = 'N' THEN 'DECIMAL(15,2)'  
+                      WHEN t.$6 = 'T' THEN 'TIME'
+                      WHEN t.$6 = 'I' THEN 'INT'
                       ELSE 'NEEDS MAPPING'
                       END, ' AS ', t.$3
                     )
@@ -93,10 +101,9 @@ SELECT ') AS CreatePipe
             AS Column_Parquet
        , CASE WHEN t.$4 = 'X' THEN t.$3 ELSE NULL END AS PrimaryKey   
     FROM
-      @MY_AZURE_DL_OBJECT_STAGE/TableFinal.csv (file_format => my_csv_format) t
+      @MY_AZURE_DL_OBJECT_STAGE/MainteinanceTables.csv (file_format => my_csv_format) t
   )
   --WHERE
   --  TABLENAME = '0COSTELMNT_ATTR'
-  GROUP BY 1,2,3,4,5,6
-)
+  GROUP BY 1,2,3,4,5,6)
 ;
